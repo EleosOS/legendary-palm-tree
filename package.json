@@ -1,9 +1,9 @@
 {
-  "name": "axoncore-app",
+  "name": "legendary-palm-tree",
   "version": "1.0.0",
-  "description": "Boilerplate AxonCore app [eris-esm].",
-  "author": "KhaaZ",
-  "link": "https://github.com/Khaazz/AxonCore",
+  "description": "discord bot",
+  "author": "Eleos",
+  "link": "",
   "license": "MIT",
   "engines": {
     "node": ">=8.0.0"
@@ -11,10 +11,7 @@
   "dependencies": {
     "@types/node": "^14.0.27",
     "@types/signale": "^1.4.1",
-    "axoncore": "^2.1.0",
-    "chalk": "^2.4.2",
     "eris": "git+https://www.github.com/khaazz/eris.git#axoncore",
-    "pm2": "^4.2.1",
     "signale": "^1.4.0",
     "typescript": "^3.9.7"
   },
@@ -22,9 +19,9 @@
     "@axonteam/eslint-config": "^2.2.1",
     "eslint": "^6.8.0"
   },
-  "main": "./index.js",
+  "main": "./master.js",
   "scripts": {
     "compile": "tsc",
-    "start": "node build/index.js"
+    "start": "node build/master.js"
   }
 }
