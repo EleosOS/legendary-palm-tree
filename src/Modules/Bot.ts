@@ -22,7 +22,7 @@ commands.forEach((element) => {
     if (element.subcommands) {
         element.subcommands.forEach((subcommand) => {
             command.registerSubcommand(subcommand.label, subcommand.execute, subcommand.options);
-            signale.info({prefix: 'commands', message:`Subcommand registred: ${subcommand.label}`});
+            signale.info({prefix: 'commands', message:`${element.label} > Subcommand registred: ${subcommand.label}`});
         })
     }
 });

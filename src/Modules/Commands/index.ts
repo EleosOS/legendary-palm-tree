@@ -1,10 +1,12 @@
 import { Message, CommandOptions } from 'eris';
 import { evalCmd } from './eval';
 import { ping } from './ping';
+import { role } from './role';
 
 export const commands: MoustacheCommand[] = [
     evalCmd,
     ping,
+    role
 ];
 
 export interface MoustacheCommand {
