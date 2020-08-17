@@ -46,7 +46,9 @@ export const role: MoustacheCommand = {
 		const guild = bot.guilds.get('649352572464922634')!;
 
 		if (args.length < 1) {
-			return '**Not all required arguments were given!**'
+			return '**The role color and name are missing!**'
+		} else if (args.length < 2) {
+			return '**The role requires a name!**'
 		}
 
 		// Check if the hex is correct, then create valid number
