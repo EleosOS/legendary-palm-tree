@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { PalmCommandOptions } from './';
 import { Utils, Constants } from 'detritus-client';
 
@@ -15,9 +14,9 @@ const evalCommand: PalmCommandOptions = {
 		{ default: false, name: 'noreply', type: 'bool' },
 		{ default: 2, name: 'jsonspacing', type: 'number' },
 	],
-	onBefore: (context) => context.user.isClientOwner,
-	onCancel: (context) => context.reply(`${context.user.mention}, fuck off`),
-	run: async (context, args) => {
+	onBefore: (ctx) => ctx.user.isClientOwner,
+	onCancel: (ctx) => ctx.reply(`${ctx.user.mention}, fuck off`),
+	run: async (ctx, args) => {
 		const { matches } = Utils.regex(Constants.DiscordRegexNames.TEXT_CODEBLOCK, args.code);
 		if (matches.length) {
 			args.code = matches[0].text;
@@ -37,7 +36,7 @@ const evalCommand: PalmCommandOptions = {
 
 		const max = 1990 - language.length;
 		if (!args.noreply) {
-			return context.reply([
+			return ctx.reply([
 				'```' + language,
 				String(message).slice(0, max),
 				'```',

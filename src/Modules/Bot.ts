@@ -14,7 +14,7 @@ Bot.on('commandError', (e) => {
 
 Bot.on('commandRatelimit', (r) => {
 	Signale.warn({ prefix: 'ratelimit', message: `${r.context.user.name}#${r.context.user.discriminator} has reached ratelimit of ${r.command.name}.`});
-	void r.context.editOrReply(`⚠ You've reached the ratelimit. Slow down.`);
+	void r.context.editOrReply('⚠ You\'ve reached the ratelimit. Slow down.');
 });
 
 Bot.addMultiple(Commands);
