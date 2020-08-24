@@ -9,6 +9,11 @@ const roleRemoveCommand: PalmCommandOptions = {
 		description: 'Removes a custom role.',
 		usage: 'role remove'
 	},
+	ratelimit: {
+		duration: 5000,
+		limit: 1,
+		type: 'guild'
+	},
 	run: async (ctx) => {
 		const guild = ctx.guilds.get('649352572464922634')!;
 
