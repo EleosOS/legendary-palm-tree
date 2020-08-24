@@ -1,8 +1,8 @@
-import { Signale } from 'signale';
+import s from 'signale';
 
-export const signale = new Signale();
+export const Signale = new s.Signale();
 
-signale.config({
+Signale.config({
 	displayTimestamp: true,
 	displayDate: true,
 });

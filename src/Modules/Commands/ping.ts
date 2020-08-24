@@ -1,25 +1,22 @@
-import { MoustacheCommand } from './index';
-import { bot } from '../index';
+import { PalmCommandOptions } from './';
 
-export const ping: MoustacheCommand = {
-    execute: async (msg) => {
-        const start = Date.now();
+const pingCommand: PalmCommandOptions = {
+	name: 'ping',
+	ratelimit: {
+		duration: 5000,
+		limit: 3,
+		type: 'guild'
+	},
+	metadata: {
+		description: 'Launches a nuke.',
+		usage: 'ping'
+	},
+	run: async (ctx) => {
+		const msg = await ctx.editOrReply(`Pong! - Gateway: \`???ms\` Rest: \`???ms\``);
+		const { gateway, rest } = await ctx.client.ping();
+		
+		return msg.edit(`Pong! - Gateway: \`${gateway}ms\` Rest: \`${rest}ms\``);
+	}
+};
 
-        const mess = await bot.createMessage(msg.channel.id, 'Pong! ');
-
-        if (!mess) {
-            return 'Something went wrong. In the ping command. Unacceptable performance.';
-        }
-
-        const diff = (Date.now() - start);
-
-        return mess.edit(`Pong! \`${diff}ms\``);
-    },
-    label: 'ping',
-    options: {
-        description: 'It\'s a ping command. What did you expect?',
-        fullDescription: 'It\'s actually a secret eval command that everyone can use.\n*Just kidding.*',
-        usage: ''
-    }
-}
-
+export default pingCommand;

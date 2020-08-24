@@ -1,63 +1,51 @@
-import { bot } from '../';
-import { MoustacheCommand } from './';
-import { inspect } from 'util';
+import { PalmCommandOptions } from './';
+import { Utils, Constants } from 'detritus-client';
 
-export const evalCmd: MoustacheCommand = {
-    // Shamelessly copied from AxonCore (with some edits). You should check it out.
-    execute: async (msg, args) => {
-        try {
-            const modules = {
-                bot: bot,
-            };
+const evalCommand: PalmCommandOptions = {
+	label: 'code',
+	name: 'eval',
+	aliases: ['e'],
+	metadata: {
+		hidden: true,
+		description: 'Eval JS code.',
+		usage: 'eval (code)'
+	},
+	args: [
+		{ default: false, name: 'noreply', type: 'bool' },
+		{ default: 2, name: 'jsonspacing', type: 'number' },
+	],
+	onBefore: (ctx) => ctx.user.isClientOwner,
+	onCancel: (ctx) => ctx.reply(`${ctx.user.mention}, fuck off`),
+	run: async (ctx, args) => {
+		const { matches } = Utils.regex(Constants.DiscordRegexNames.TEXT_CODEBLOCK, args.code);
+		if (matches.length) {
+			args.code = matches[0].text;
+		}
 
-            // tslint:disable-next-line: no-eval
-            let evaled = await eval(args.join(' '));
+		let language = 'js';
+		let message: unknown;
+		try {
+			message = await Promise.resolve(eval(args.code));
+			if (typeof (message) === 'object') {
+				message = JSON.stringify(message, null, args.jsonspacing);
+				language = 'json';
+			}
+		} catch (error) {
+			message = (error) ? error.stack || error.message : error;
+		}
 
-            if (typeof evaled === 'object') {
-                evaled = inspect(evaled, { depth: 0, showHidden: true });
-            } else {
-                evaled = String(evaled);
-            }
+		const max = 1990 - language.length;
+		if (!args.noreply) {
+			return ctx.reply([
+				'```' + language,
+				String(message).slice(0, max),
+				'```',
+			].join('\n'));
+		}
+	},
+	onError: (context, args, error) => {
+		console.error(error);
+	},
+}
 
-            // Just in case.
-            evaled = evaled.split(bot.token).join('[Something is not allowing you to see this part of the message.]');
-
-            const charlength = evaled.length;
-
-            if (evaled.length === 0) {
-                return;
-            }
-
-            if (evaled.length > 2000) {
-                evaled = evaled.match(/[\s\S]{1,1900}[\n\r]/g) || [];
-                if (evaled.length > 3) {
-                bot.createMessage(msg.channel.id, `Cut the response! [${evaled.length} | ${charlength}]`);
-                bot.createMessage(msg.channel.id, `\`\`\`js\n${evaled[0]}\`\`\``);
-                bot.createMessage(msg.channel.id, `\`\`\`js\n${evaled[1]}\`\`\``);
-                bot.createMessage(msg.channel.id, `\`\`\`js\n${evaled[2]}\`\`\``);
-                return;
-            } else {
-                    return evaled.forEach((message: string) => {
-                        bot.createMessage(msg.channel.id, `\`\`\`js\n${message}\`\`\``);
-                        return;
-                    });
-                }
-            }
-
-            return bot.createMessage(msg.channel.id, `\`\`\`js\n${evaled}\`\`\``);
-        } catch (err) {
-            console.log(err.stack);
-            return bot.createMessage(msg.channel.id, err.message ? err.message : err.name);
-        }
-    },
-    label: 'eval',
-    options: {
-        description: 'Eval JS code.',
-        fullDescription: '[Something is blocking this part of the message, you can\'t decipher what it reads.]',
-        usage: '',
-        aliases: ['e'],
-        requirements: {
-            userIDs: ['249880389160665089'],
-        },
-    },
-};
+export default evalCommand;

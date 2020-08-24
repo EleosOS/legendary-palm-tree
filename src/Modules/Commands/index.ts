@@ -1,23 +1,22 @@
-import { Message, CommandOptions } from 'eris';
-import { evalCmd } from './eval';
-import { ping } from './ping';
-import { role } from './role';
+import pingCommand from './ping';
+import evalCommand from './eval';
+import roleCommand from './role';
+import roleRemoveCommand from './role.remove';
+import { CommandOptions } from 'detritus-client/lib/command';
 
-export const commands: MoustacheCommand[] = [
-    evalCmd,
-    ping,
-    role
+export interface PalmCommandOptions extends CommandOptions {
+	name: string
+	metadata: {
+		hidden?: boolean
+		description: string
+		usage: string,
+		[key: string]: any
+	}
+}
+
+export default [
+	pingCommand,
+	evalCommand,
+	roleCommand,
+	roleRemoveCommand
 ];
-
-export interface MoustacheCommand {
-    execute: (msg: Message, args: string[]) => Promise<string | Message>;
-    label: string;
-    options: MoustacheOptions;
-    subcommands?: MoustacheCommand[];
-}
-
-interface MoustacheOptions extends CommandOptions {
-    description: string;
-    fullDescription: string;
-    usage: string;
-}

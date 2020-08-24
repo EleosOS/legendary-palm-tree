@@ -1,7 +1,7 @@
-import { bot, signale } from './Modules'
+import { Bot } from './Modules/Bot';
+import { Signale } from './Modules/Signale';
 
-bot.connect();
-
-bot.once('ready', () => {
-    signale.complete({prefix:'startup', message: 'Bot is ready!'});
-});
+void (async () => {
+	await Bot.run();
+	Signale.start({prefix: 'startup', message: 'Bot ready'});
+})();
