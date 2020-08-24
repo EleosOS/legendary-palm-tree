@@ -8,6 +8,11 @@ const roleCommand: PalmCommandOptions = {
 		description: 'Creates a custom role and assigns it to you.',
 		usage: 'role (hex) (role name)'
 	},
+	ratelimit: {
+		duration: 5000,
+		limit: 1,
+		type: 'guild'
+	},
 	type: [{ name: 'hex' }, { name: 'rolename', consume: true }],
 	onBeforeRun: (ctx, args) => {
 		return /^#?([0-9A-Fa-f]{6})$/.test(args.hex) && args.rolename;
