@@ -4,7 +4,7 @@ import { Signale } from './Signale';
 import Commands from './Commands';
 
 export const Bot = new CommandClient(Config.token, {
-	prefixes: [ 'os', 'i cast ', 's']
+	prefixes: [ 'os', 'i cast ']
 });
 
 Bot.on('commandFail', (e) => {
