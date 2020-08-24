@@ -24,6 +24,19 @@ Bot.on('commandRatelimit', (r) => {
 
 Bot.addMultiple(Commands);
 
-Bot.commands.forEach((command) => {
+const commandsSorted = Bot.commands.sort((a, b) => {
+	const nameA = a.name.toUpperCase();
+	const nameB = b.name.toUpperCase();
+
+	if (nameA < nameB) {
+		return -1;
+	} else if (nameA > nameB) {
+		return 1;
+	} else {
+		return 0;
+	}
+});
+
+commandsSorted.forEach((command) => {
 	Signale.info({ prefix: 'startup', message: 'Command found:', suffix: command.name });
 });
