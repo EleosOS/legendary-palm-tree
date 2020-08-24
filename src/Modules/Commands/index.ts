@@ -1,5 +1,6 @@
-import pingCommand from './ping';
 import evalCommand from './eval';
+import helpCommand from './help';
+import pingCommand from './ping';
 import roleCommand from './role';
 import roleRemoveCommand from './role.remove';
 import { CommandOptions } from 'detritus-client/lib/command';
@@ -15,8 +16,9 @@ export interface PalmCommandOptions extends CommandOptions {
 }
 
 export default [
-	pingCommand,
 	evalCommand,
+	helpCommand,
+	pingCommand,
 	roleCommand,
 	roleRemoveCommand
 ];
