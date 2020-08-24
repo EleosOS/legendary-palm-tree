@@ -25,7 +25,7 @@ const helpCommand: PalmCommandOptions = {
 			}
 		} else {
 			let string = 'ℹ  **List of commands**\n';
-			const commandsSorted = ctx.commandClient.commands.sort((a, b) => {
+			const commandsSorted = ctx.commandClient.commands.slice().sort((a, b) => {
 				const nameA = a.name.toUpperCase();
 				const nameB = b.name.toUpperCase();
 

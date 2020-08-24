@@ -24,7 +24,7 @@ Bot.on('commandRatelimit', (r) => {
 
 Bot.addMultiple(Commands);
 
-const commandsSorted = Bot.commands.sort((a, b) => {
+const commandsSorted = Bot.commands.slice().sort((a, b) => {
 	const nameA = a.name.toUpperCase();
 	const nameB = b.name.toUpperCase();
 
