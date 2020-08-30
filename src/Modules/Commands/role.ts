@@ -41,9 +41,25 @@ const roleCommand: PalmCommandOptions = {
 		jsonFile.writeFile(`./src/db/${ctx.userId}.json`, { roleId: newRole.id })
 			.catch(e => Signale.error({ prefix: 'role', message: e }));
 	},
-	onSuccess: (ctx, args) => {
+	onSuccess: async (ctx, args) => {
 		Signale.success({ prefix: 'role', message: `Created role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}` });
-		return ctx.editOrReply('✅  **Custom role assigned.**');
+		ctx.editOrReply('✅  **Custom role assigned.**');
+
+		if (ctx.guild) {
+			const webhooks = await ctx.guild.fetchWebhooks();
+			webhooks.get('749390079272681544')!.execute({
+				avatarUrl: ctx.me!.avatarUrl,
+				embed: {
+					title: `Created role`,
+					description: `Color: \`${args.hex}\`\nName: \`${args.rolename}\``,
+					author: {
+						name: ctx.user.name,
+						iconUrl: ctx.user.avatarUrl
+					},
+					color: Number('0x' + (args.hex as string).slice(1))
+				}
+			});	
+		}
 	}
 };
 

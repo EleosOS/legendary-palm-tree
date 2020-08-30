@@ -1,5 +1,6 @@
 import evalCommand from './eval';
 import helpCommand from './help';
+import hueCommand from './hue';
 import pingCommand from './ping';
 import roleCommand from './role';
 import roleRemoveCommand from './role.remove';
@@ -18,7 +19,8 @@ export interface PalmCommandOptions extends CommandOptions {
 export default [
 	evalCommand,
 	helpCommand,
+	hueCommand,
 	pingCommand,
 	roleCommand,
-	roleRemoveCommand
+	roleRemoveCommand,
 ];

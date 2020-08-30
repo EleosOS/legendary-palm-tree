@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "detritus-client": "^0.11.1",
+    "jimp": "^0.16.1",
     "jsonfile": "^6.0.1",
     "signale": "^1.4.0",
     "typescript": "^4.0.2"
@@ -22,10 +23,10 @@
     "@typescript-eslint/parser": "^3.9.1",
     "eslint": "^7.7.0"
   },
-  "main": "./master.js",
+  "main": "./run.js",
   "scripts": {
     "compile": "tsc",
     "prestart": "tsc --incremental",
-    "start": "node build/master.js"
+    "start": "node build/run.js"
   }
 }

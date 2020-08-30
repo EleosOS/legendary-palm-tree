@@ -15,7 +15,7 @@ const evalCommand: PalmCommandOptions = {
 		{ default: 2, name: 'jsonspacing', type: 'number' },
 	],
 	onBefore: (ctx) => ctx.user.isClientOwner,
-	onCancel: (ctx) => ctx.reply(`${ctx.user.mention}, fuck off`),
+	onCancel: (ctx) => ctx.reply('⚠  **You\'re not allowed to use this command.**'),
 	run: async (ctx, args) => {
 		const { matches } = Utils.regex(Constants.DiscordRegexNames.TEXT_CODEBLOCK, args.code);
 		if (matches.length) {

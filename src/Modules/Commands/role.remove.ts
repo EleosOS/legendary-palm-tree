@@ -28,9 +28,23 @@ const roleRemoveCommand: PalmCommandOptions = {
 			})
 			.catch(e => Signale.error({ prefix: 'role', message: e }));
 	},
-	onSuccess: (ctx) => {
+	onSuccess: async (ctx) => {
 		Signale.success({ prefix: 'role', message: `Removed role for ${ctx.user.name}` });
-		return ctx.editOrReply('✅  **Custom role removed.**');
+		ctx.editOrReply('✅  **Custom role removed.**');
+
+		if (ctx.guild) {
+			const webhooks = await ctx.guild.fetchWebhooks();
+			webhooks.get('749390079272681544')!.execute({
+				avatarUrl: ctx.me!.avatarUrl,
+				embed: {
+					title: `Removed role`,
+					author: {
+						name: ctx.user.name,
+						iconUrl: ctx.user.avatarUrl
+					},
+				}
+			});	
+		}
 	}
 };
 
