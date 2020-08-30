@@ -1,5 +1,6 @@
 import { CommandClient, Constants, ClusterClient } from 'detritus-client';
 import Jimp from 'jimp';
+import jsonFile from 'jsonfile';
 import { Config } from '../config';
 import { Signale } from './Signale';
 import Commands from './Commands';
@@ -38,10 +39,18 @@ export async function changeRecringeHue() {
 		icon: await image.getBufferAsync('image/png')
 	});
 
+	let { currentHue } = await jsonFile.readFile('./src/db/hue.json');
+	currentHue = Number(currentHue);
+	currentHue += 10
+
+	if (currentHue >= 360) currentHue = 0;
+
+	jsonFile.writeFileSync('./src/db/hue.json', { currentHue });
+
 	(await guild.fetchWebhooks()).get('749389905880285274')!.execute({
 		avatarUrl: client.user!.avatarUrl,
 		embed: {
-			title: 'Hue has been changed.',
+			title: `Hue has been changed. (${currentHue})`,
 			author: {
 				name: 'os',
 				iconUrl: client.user!.avatarUrl
@@ -52,7 +61,7 @@ export async function changeRecringeHue() {
 		}
 	});
 
-	Signale.note({ prefix: 'hue', message: 'Hue color has been changed.'});
+	Signale.note({ prefix: 'hue', message: `Hue has been changed. (${currentHue})`});
 }
 
 /*
