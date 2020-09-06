@@ -1,4 +1,4 @@
-import { CommandClient, Constants, ClusterClient } from 'detritus-client';
+import { CommandClient, Constants, ShardClient } from 'detritus-client';
 import Jimp from 'jimp';
 import jsonFile from 'jsonfile';
 import { Config } from '../config';
@@ -6,7 +6,8 @@ import { Signale } from './Signale';
 import Commands from './Commands';
 
 export const Bot = new CommandClient(Config.token, {
-	prefixes: [ 'os', 'i cast ']
+	prefixes: [ 'os', 'i cast '],
+	useClusterClient: false
 });
 
 Bot.on(Constants.ClientEvents.COMMAND_FAIL, (e) => {
@@ -29,7 +30,7 @@ Bot.on(Constants.ClientEvents.COMMAND_RATELIMIT, (r) => {
 });
 
 export async function changeRecringeHue() {
-	const client = (Bot.client as ClusterClient).shards.get(0)!
+	const client = (Bot.client as ShardClient);
 	const guild = client.guilds.get('649352572464922634')!;
 	const image = await Jimp.read(guild.iconUrl!);
 
