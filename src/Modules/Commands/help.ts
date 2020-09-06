@@ -44,7 +44,7 @@ const helpCommand: PalmCommandOptions = {
 				return string += '\n' + command.name;
 			});
 
-			string += '\n\n**For more infos on a command type `oshelp [command]`.**';
+			string += '\n\n**For more infos on a command, type `oshelp [command]`.**';
 
 		 	return ctx.editOrReply(string);
 		}

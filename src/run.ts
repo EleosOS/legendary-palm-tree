@@ -1,4 +1,3 @@
-import { ClusterClient, ShardClient } from 'detritus-client';
 import { Bot, changeRecringeHue } from './Modules/Bot';
 import { Signale } from './Modules/Signale';
 
