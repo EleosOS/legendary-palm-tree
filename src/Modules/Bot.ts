@@ -7,7 +7,20 @@ import Commands from './Commands';
 
 export const Bot = new CommandClient(Config.token, {
 	prefixes: [ 'os', 'i cast '],
-	useClusterClient: false
+	useClusterClient: false,
+	gateway: {
+		presence: {
+			activity: {
+				name: 'Prefix: os',
+				type: 4,
+				emoji: {
+					name: ':white_circle:',
+					animated: false,
+					id: null
+				}
+			}
+		}
+	}
 });
 
 Bot.on(Constants.ClientEvents.COMMAND_FAIL, (e) => {
