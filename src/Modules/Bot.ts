@@ -11,13 +11,14 @@ export const Bot = new CommandClient(Config.token, {
 	gateway: {
 		presence: {
 			activity: {
-				name: 'Prefix: os',
-				type: 4,
+				name: 'prefix: os',
+				type: 0
+			  /*type: 4,
 				emoji: {
 					name: ':white_circle:',
 					animated: false,
 					id: null
-				}
+				}*/
 			}
 		}
 	}
