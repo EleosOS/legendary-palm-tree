@@ -43,7 +43,7 @@ Bot.on(Constants.ClientEvents.COMMAND_RATELIMIT, (r) => {
 	void r.context.editOrReply('⚠  You\'ve reached the ratelimit. Slow down.');
 });
 
-export async function changeRecringeHue() {
+export async function changeRecringeHue(amount: number) {
 	const client = (Bot.client as ShardClient);
 	const guild = client.guilds.get('649352572464922634')!;
 	const image = await Jimp.read(guild.iconUrl!);
@@ -56,7 +56,7 @@ export async function changeRecringeHue() {
 
 	let { currentHue } = await jsonFile.readFile('./src/db/hue.json');
 	currentHue = Number(currentHue);
-	currentHue += 10
+	currentHue += amount;
 
 	if (currentHue >= 360) currentHue = 0;
 

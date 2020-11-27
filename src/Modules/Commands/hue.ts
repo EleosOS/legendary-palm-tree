@@ -5,7 +5,7 @@ const hueCommand: PalmCommandOptions = {
 	name: 'hue',
 	metadata: {
 		hidden: true,
-		description: 'Triggers a hue change.',
+		description: 'Changes the hue by amount.',
 		usage: 'hue'
 	},
 	ratelimit: {
@@ -14,8 +14,9 @@ const hueCommand: PalmCommandOptions = {
 		type: 'guild'
 	},
 	disableDm: true,
+	type: [{ name: 'amount' }],
 	onBeforeRun: (ctx) => {
-		// Don't run the command if the guild doesn't have an icon
+		// Don't run the command if the guild doesn't have an icon (just in case)
 		if (ctx.guild!.iconUrl && ctx.user.isClientOwner) {
 			return true;
 		} else {
@@ -23,8 +24,12 @@ const hueCommand: PalmCommandOptions = {
 		}
 	},
 	onCancelRun: ctx => ctx.editOrReply('⚠  **This server doesn\'t have an icon or you\'re not allowed to use this command.**'),
-	run: async (ctx) => {
-		await changeRecringeHue();
+	run: async (ctx, args) => {
+		if (!args.amount) {
+			args.amount = 10;
+		}
+		
+		await changeRecringeHue(args.amount);
 		return ctx.editOrReply('✅  **The server icon hue has been manually changed.**');
 	}
 };
