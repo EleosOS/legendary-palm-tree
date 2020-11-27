@@ -15,7 +15,7 @@ void (async () => {
 	hueTrigger.setMilliseconds(0);
 
 	setTimeout(() => {
-		changeRecringeHue();
-		setInterval(() => changeRecringeHue(), 86400000);
+		void changeRecringeHue();
+		setInterval(() => void changeRecringeHue(), 86400000);
 	}, hueTrigger.getTime() - now.getTime());
 })();

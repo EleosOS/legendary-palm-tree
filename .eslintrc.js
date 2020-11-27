@@ -14,6 +14,8 @@ module.exports = {
 		'plugin:@typescript-eslint/recommended-requiring-type-checking',
 	],
 	rules: {
-		'@typescript-eslint/no-unsafe-member-access': false
+		'@typescript-eslint/no-unsafe-member-access': 0,
+		'@typescript-eslint/restrict-template-expressions': 0,
+		'@typescript-eslint/no-unsafe-assignment': 1
 	}
 };
