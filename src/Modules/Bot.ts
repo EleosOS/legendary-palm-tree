@@ -58,7 +58,7 @@ export async function changeRecringeHue(amount: number) {
 	currentHue = Number(currentHue);
 	currentHue += amount;
 
-	if (currentHue >= 360) currentHue -= 360;
+	if (currentHue >= 370) currentHue -= 370;
 
 	jsonFile.writeFileSync('./src/db/hue.json', { currentHue });
 
