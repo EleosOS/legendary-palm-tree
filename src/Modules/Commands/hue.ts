@@ -29,7 +29,7 @@ const hueCommand: PalmCommandOptions = {
 			args.amount = 10;
 		}
 		
-		await changeRecringeHue(args.amount);
+		await changeRecringeHue(Number(args.amount));
 		return ctx.editOrReply('✅  **The server icon hue has been manually changed.**');
 	}
 };

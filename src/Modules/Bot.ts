@@ -48,7 +48,7 @@ export async function changeRecringeHue(amount: number) {
 	const guild = client.guilds.get('649352572464922634')!;
 	const image = await Jimp.read(guild.iconUrl!);
 
-	image.color([ { apply: 'hue', params: [10] } ]);
+	image.color([ { apply: 'hue', params: [amount] } ]);
 
 	await guild!.edit({
 		icon: await image.getBufferAsync('image/png')
@@ -58,7 +58,7 @@ export async function changeRecringeHue(amount: number) {
 	currentHue = Number(currentHue);
 	currentHue += amount;
 
-	if (currentHue >= 360) currentHue = 0;
+	if (currentHue >= 360) currentHue -= 360;
 
 	jsonFile.writeFileSync('./src/db/hue.json', { currentHue });
 
