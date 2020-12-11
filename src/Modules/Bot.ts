@@ -6,7 +6,7 @@ import { Signale } from './Signale';
 import Commands from './Commands';
 
 export const Bot = new CommandClient(Config.token, {
-	prefixes: [ 'os', 'i cast ', 'x'],
+	prefixes: [ 'os', 'i cast '],
 	useClusterClient: false,
 	gateway: {
 		presence: {
