@@ -33,9 +33,11 @@ const roleCommand: PalmCommandOptions = {
 
 		const newRole = await guild.createRole({
 			name: args.rolename,
-			color: Number('0x' + (args.hex as string).slice(1))
+			color: Number('0x' + (args.hex as string).slice(1)),
+			hoist: true,
 		});
 
+		guild.editRolePositions([{ id: newRole.id, position: Math.floor(Math.random() * (guild.memberCount - 1)) }])
 		await guild.addMemberRole(ctx.userId, newRole.id);
 
 		jsonFile.writeFile(`./src/db/${ctx.userId}.json`, { roleId: newRole.id })

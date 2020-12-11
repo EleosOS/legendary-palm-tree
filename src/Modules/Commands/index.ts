@@ -4,6 +4,7 @@ import hueCommand from './hue';
 import pingCommand from './ping';
 import roleCommand from './role';
 import roleRemoveCommand from './role.remove';
+import roleInfoCommand from './role.info';
 import { CommandOptions } from 'detritus-client/lib/command';
 
 export interface PalmCommandOptions extends CommandOptions {
@@ -23,4 +24,5 @@ export default [
 	pingCommand,
 	roleCommand,
 	roleRemoveCommand,
+	roleInfoCommand,
 ];
