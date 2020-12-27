@@ -50,15 +50,21 @@ export async function changeRecringeHue(amount: number) {
 
 	image.color([ { apply: 'hue', params: [amount] } ]);
 
-	await guild!.edit({
-		icon: await image.getBufferAsync('image/png')
-	});
+	if (image.getExtension() === "gif") {
+    	await guild!.edit({
+      		icon: await image.getBufferAsync("image/gif"),
+    	});
+  	} else {
+		await guild!.edit({
+			icon: await image.getBufferAsync('image/png')
+		});
+	}
 
 	let { currentHue } = await jsonFile.readFile('./src/db/hue.json');
 	currentHue = Number(currentHue);
 	currentHue += amount;
 
-	if (currentHue >= 370) currentHue -= 370;
+	if (currentHue >= 360) currentHue -= 360;
 
 	jsonFile.writeFileSync('./src/db/hue.json', { currentHue });
 
