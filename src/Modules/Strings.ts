@@ -7,7 +7,7 @@ export const Strings = {
         general: {
             usageNotAllowed: "⚠  **You're not allowed to use this command.**",
             argsIncorrectOrIncomplete:
-                "⚠  **The given args are incorrect or incomplete.**",
+                "⚠  **The given arguments are incorrect or incomplete. Use oshelp for more info.**",
         },
         help: {
             doesntExist: "❌  **That command doesn't exist.**",

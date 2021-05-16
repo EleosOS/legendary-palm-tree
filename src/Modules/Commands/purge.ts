@@ -16,7 +16,7 @@ const purgeCommand: PalmCommandOptions = {
         type: "guild",
     },
     type: [{ name: "amount", type: Number }],
-    onBeforeRun: (ctx, args) => ctx.user.isClientOwner && !ctx.inDm,
+    onBeforeRun: (ctx) => ctx.user.isClientOwner && !ctx.inDm,
     onCancelRun: (ctx) =>
         ctx.editOrReply(Strings.commands.general.usageNotAllowed),
     run: async (ctx, args) => {
@@ -30,12 +30,10 @@ const purgeCommand: PalmCommandOptions = {
             args.amount = 2;
         }
 
-        const messages: BaseCollection<
-            string,
-            Message
-        > = await ctx.channel!.fetchMessages({
-            limit: args.amount,
-        });
+        const messages: BaseCollection<string, Message> =
+            await ctx.channel!.fetchMessages({
+                limit: args.amount,
+            });
 
         if (messages.length < 2) {
             return false;

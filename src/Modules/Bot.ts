@@ -72,7 +72,7 @@ export async function changeRecringeHue(amount: number) {
 
     jsonFile.writeFileSync("./src/db/hue.json", { currentHue });
 
-    (await guild.fetchWebhooks()).get("749389905880285274")!.execute({
+    (await guild.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
         avatarUrl: client.user!.avatarUrl,
         embed: {
             title: `Hue has been changed. (${currentHue})`,

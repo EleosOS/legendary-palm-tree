@@ -4,7 +4,7 @@ import { Strings } from "../";
 const helpCommand: PalmCommandOptions = {
     name: "help",
     metadata: {
-        description: "w.",
+        description: "Displays available commands and more info on a command.",
         usage: "help [command]",
     },
     ratelimit: {
@@ -47,7 +47,7 @@ const helpCommand: PalmCommandOptions = {
                 });
 
             commandsSorted.forEach((command) => {
-                if (command.metadata.hidden) return;
+                if (command.metadata.hidden && !ctx.user.isClientOwner) return;
 
                 return (string += "\n" + command.name);
             });

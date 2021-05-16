@@ -1,5 +1,6 @@
 import { PalmCommandOptions } from "./";
 import { Signale, Strings, DB } from "../";
+import { Config } from "../../config";
 import { RowDataPacket } from "mysql2";
 
 const roleCommand: PalmCommandOptions = {
@@ -91,7 +92,7 @@ const roleCommand: PalmCommandOptions = {
         }
 
         const webhooks = await guild.fetchWebhooks();
-        webhooks.get("749390079272681544")!.execute({
+        webhooks.get(Config.webhooks.customRoles)!.execute({
             avatarUrl: ctx.me!.avatarUrl,
             embed: {
                 title: `Created/Edited role`,

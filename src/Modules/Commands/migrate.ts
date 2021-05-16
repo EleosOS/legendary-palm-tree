@@ -6,7 +6,7 @@ const migrateCommand: PalmCommandOptions = {
     name: "migrate",
     metadata: {
         description: Strings.containment.beta.stringClassifiedAccessDenied,
-        usage:  Strings.containment.beta.classified,
+        usage: Strings.containment.beta.classified,
         hidden: true,
     },
     ratelimit: {
@@ -16,7 +16,7 @@ const migrateCommand: PalmCommandOptions = {
     },
     onBefore: (ctx) => ctx.user.isClientOwner,
     onCancel: (ctx) =>
-        ctx.reply( Strings.containment.beta.containmentOperationalAccessDenied),
+        ctx.reply(Strings.containment.beta.containmentOperationalAccessDenied),
     run: async (ctx) => {
         migrateDBToMySQL(ctx);
         ctx.editOrReply(Strings.containment.beta.successQuestionmark);
