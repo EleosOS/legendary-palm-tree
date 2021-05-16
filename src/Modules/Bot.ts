@@ -11,8 +11,9 @@ export const Bot = new CommandClient(Config.token, {
     gateway: {
         intents: [
             "GUILDS",
+			"GUILD_MESSAGES",
             "GUILD_MEMBERS",
-            "GUILD_WBEHOOKS",
+            "GUILD_WEBHOOKS",
             "DIRECT_MESSAGES",
         ],
         presence: {
