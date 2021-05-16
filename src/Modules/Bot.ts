@@ -9,6 +9,12 @@ export const Bot = new CommandClient(Config.token, {
     prefixes: ["os", "i cast"],
     useClusterClient: false,
     gateway: {
+        intents: [
+            "GUILDS",
+            "GUILD_MEMBERS",
+            "GUILD_WBEHOOKS",
+            "DIRECT_MESSAGES",
+        ],
         presence: {
             activity: {
                 name: "prefix: os",
