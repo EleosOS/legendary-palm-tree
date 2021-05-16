@@ -1,51 +1,67 @@
-import jsonFile from 'jsonfile';
-import { PalmCommandOptions } from './';
-import { Signale } from '../Signale';
+import { PalmCommandOptions } from "./";
+import { Signale, Strings, DB } from "../";
+import { RowDataPacket } from "mysql2";
 
 const roleRemoveCommand: PalmCommandOptions = {
-	name: 'role remove',
-	priority: 1,
-	metadata: {
-		description: 'Removes a custom role.',
-		usage: 'role remove'
-	},
-	ratelimit: {
-		duration: 5000,
-		limit: 1,
-		type: 'guild'
-	},
-	run: async (ctx) => {
-		const guild = ctx.guilds.get('649352572464922634')!;
+    name: "role remove",
+    priority: 1,
+    metadata: {
+        description: "Removes a custom role.",
+        usage: "role remove",
+    },
+    ratelimit: {
+        duration: 5000,
+        limit: 1,
+        type: "guild",
+    },
+    run: async (ctx) => {
+        const guild = ctx.guilds.get("649352572464922634")!;
 
-		jsonFile.readFile(`./src/db/${ctx.userId}.json`)
-			.then(async (data) => {
-				if (data.roleId.length > 0) {
-					await guild.deleteRole(data.roleId, { reason: 'User created new custom role' });
+        const result = await DB.query(
+            "SELECT roleId FROM customRoles WHERE userId = ?",
+            [ctx.userId]
+        );
 
-					jsonFile.writeFile(`./src/db/${ctx.userId}.json`, { roleId: '' })
-						.catch(e => Signale.error({ prefix: 'role', message: e }));
-				}
-			})
-			.catch(e => Signale.error({ prefix: 'role', message: e }));
-	},
-	onSuccess: async (ctx) => {
-		Signale.success({ prefix: 'role', message: `Removed role for ${ctx.user.name}` });
-		ctx.editOrReply('✅  **Custom role removed.**');
+        if (
+            result &&
+            (result[0] as RowDataPacket[]).length > 0 &&
+            ((result[0] as any)[0].roleId as string).length > 0
+        ) {
+            const roleId = (result[0] as any)[0].roleId;
 
-		if (ctx.guild) {
-			const webhooks = await ctx.guild.fetchWebhooks();
-			webhooks.get('749390079272681544')!.execute({
-				avatarUrl: ctx.me!.avatarUrl,
-				embed: {
-					title: `Removed role`,
-					author: {
-						name: ctx.user.name,
-						iconUrl: ctx.user.avatarUrl
-					},
-				}
-			});	
-		}
-	}
+            guild.deleteRole(roleId, {
+                reason: Strings.commands.roles.userRemovedRole,
+            });
+
+            DB.query('UPDATE customRoles SET roleId = "" WHERE userId = ?', [
+                ctx.userId,
+            ]);
+        } else {
+            ctx.editOrReply(Strings.commands.roles.noRole);
+            return false;
+        }
+    },
+    onSuccess: async (ctx) => {
+        const guild = ctx.guilds.get("649352572464922634")!;
+
+        Signale.success({
+            prefix: "role",
+            message: `Removed role for ${ctx.user.name}`,
+        });
+        ctx.editOrReply(Strings.commands.roles.roleRemoved);
+
+        const webhooks = await guild.fetchWebhooks();
+        webhooks.get("749390079272681544")!.execute({
+            avatarUrl: ctx.me!.avatarUrl,
+            embed: {
+                title: "Removed role",
+                author: {
+                    name: ctx.user.name,
+                    iconUrl: ctx.user.avatarUrl,
+                },
+            },
+        });
+    },
 };
 
 export default roleRemoveCommand;

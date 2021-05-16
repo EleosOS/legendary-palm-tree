@@ -1,68 +1,109 @@
-import jsonFile from 'jsonfile';
-import { PalmCommandOptions } from './';
-import { Signale } from '../Signale';
+import { PalmCommandOptions } from "./";
+import { Signale, Strings, DB } from "../";
+import { RowDataPacket } from "mysql2";
 
 const roleCommand: PalmCommandOptions = {
-	name: 'role',
-	metadata: {
-		description: 'Creates a custom role and assigns it to you.',
-		usage: 'role (hex) (role name)'
-	},
-	ratelimit: {
-		duration: 5000,
-		limit: 1,
-		type: 'guild'
-	},
-	type: [{ name: 'hex' }, { name: 'rolename', consume: true }],
-	onBeforeRun: (ctx, args) => {
-		return /^#?([0-9A-Fa-f]{6})$/.test(args.hex) && args.rolename;
-	},
-	onCancelRun: (ctx) => {
-		return ctx.editOrReply('⚠  **The given args are incorrect or incomplete.**');
-	},
-	run: async (ctx, args) => {
-		const guild = ctx.guilds.get('649352572464922634')!;
+    name: "role",
+    metadata: {
+        description: "Creates a custom role and assigns it to you.",
+        usage: "role (hex) (role name)",
+        edited: false,
+    },
+    ratelimit: {
+        duration: 5000,
+        limit: 1,
+        type: "guild",
+    },
+    type: [{ name: "hex" }, { name: "rolename", consume: true }],
+    onBeforeRun: (ctx, args) => {
+        return /^#?([0-9A-Fa-f]{6})$/.test(args.hex) && args.rolename;
+    },
+    onCancelRun: (ctx) => {
+        return ctx.editOrReply(
+            Strings.commands.general.argsIncorrectOrIncomplete
+        );
+    },
+    run: async (ctx, args) => {
+        ctx.command!.metadata.edited = false;
 
-		jsonFile.readFile(`./src/db/${ctx.userId}.json`)
-			.then((data) => {
-				if (data.roleId.length > 0) {
-					guild.deleteRole(data.roleId, { reason: 'User created new custom role' });
-				}
-			})
-			.catch(e => Signale.error({ prefix: 'role', message: e }));
+        const guild = ctx.guilds.get("649352572464922634")!;
+        let roleId: string;
 
-		const newRole = await guild.createRole({
-			name: args.rolename,
-			color: Number('0x' + (args.hex as string).slice(1)),
-			hoist: true,
-		});
+        const result = await DB.query(
+            "SELECT roleId FROM customRoles WHERE userId = ?",
+            [ctx.userId]
+        );
 
-		guild.editRolePositions([{ id: newRole.id, position: Math.floor(Math.random() * (guild.memberCount - 1)) }])
-		await guild.addMemberRole(ctx.userId, newRole.id);
+        // result was successful AND result contains something AND the roleId of the result is not empty
+        if (
+            result &&
+            (result[0] as RowDataPacket[]).length > 0 &&
+            ((result[0] as any)[0].roleId as string).length > 0
+        ) {
+            roleId = (result[0] as any)[0].roleId;
 
-		jsonFile.writeFile(`./src/db/${ctx.userId}.json`, { roleId: newRole.id })
-			.catch(e => Signale.error({ prefix: 'role', message: e }));
-	},
-	onSuccess: async (ctx, args) => {
-		Signale.success({ prefix: 'role', message: `Created role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}` });
-		ctx.editOrReply('✅  **Custom role assigned.**');
+            guild.editRole(roleId, {
+                name: args.rolename,
+                color: Number("0x" + (args.hex as string).slice(1)),
+                hoist: true,
+                reason: Strings.commands.roles.userChangedRole,
+            });
 
-		if (ctx.guild) {
-			const webhooks = await ctx.guild.fetchWebhooks();
-			webhooks.get('749390079272681544')!.execute({
-				avatarUrl: ctx.me!.avatarUrl,
-				embed: {
-					title: `Created role`,
-					description: `Color: \`${args.hex}\`\nName: \`${args.rolename}\``,
-					author: {
-						name: ctx.user.name,
-						iconUrl: ctx.user.avatarUrl
-					},
-					color: Number('0x' + (args.hex as string).slice(1))
-				}
-			});	
-		}
-	}
+            ctx.command!.metadata.edited = true;
+        } else {
+            const newRole = await guild.createRole({
+                name: args.rolename,
+                color: Number("0x" + (args.hex as string).slice(1)),
+                hoist: true,
+            });
+
+            roleId = newRole.id;
+            guild.addMemberRole(ctx.userId, roleId);
+        }
+
+        guild.editRolePositions([
+            {
+                id: roleId,
+                position: Math.floor(Math.random() * (guild.memberCount - 1)),
+            },
+        ]);
+
+        await DB.query("UPDATE customRoles SET roleId = ? WHERE userId = ?", [
+            roleId,
+            ctx.userId,
+        ]);
+    },
+    onSuccess: async (ctx, args) => {
+        const guild = ctx.guilds.get("649352572464922634")!;
+
+        if (ctx.command!.metadata.edited) {
+            Signale.success({
+                prefix: "role",
+                message: `Edited role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
+            });
+            ctx.editOrReply(Strings.commands.roles.roleEdited);
+        } else {
+            Signale.success({
+                prefix: "role",
+                message: `Created role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
+            });
+            ctx.editOrReply(Strings.commands.roles.roleCreated);
+        }
+
+        const webhooks = await guild.fetchWebhooks();
+        webhooks.get("749390079272681544")!.execute({
+            avatarUrl: ctx.me!.avatarUrl,
+            embed: {
+                title: `Created/Edited role`,
+                description: `Color: \`${args.hex}\`\nName: \`${args.rolename}\``,
+                author: {
+                    name: ctx.user.name,
+                    iconUrl: ctx.user.avatarUrl,
+                },
+                color: Number("0x" + (args.hex as string).slice(1)),
+            },
+        });
+    },
 };
 
 export default roleCommand;

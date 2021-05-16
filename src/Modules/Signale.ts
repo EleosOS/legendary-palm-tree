@@ -1,8 +1,8 @@
-import s from 'signale';
+import s from "signale";
 
 export const Signale = new s.Signale();
 
 Signale.config({
-	displayTimestamp: true,
-	displayDate: true,
+    displayTimestamp: true,
+    displayDate: true,
 });
