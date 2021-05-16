@@ -5,7 +5,7 @@ import { Context } from "detritus-client/lib/command";
 
 export async function createDB() {
     await DB.query(
-        "CREATE TABLE customRoles (userId VARCHAR(255), roleId VARCHAR(255), PRIMARY KEY (userId));"
+        "CREATE TABLE customRoles (id INT PRIMARY KEY AUTO_INCREMENT UNIQUE, userId VARCHAR(255) NOT NULL UNIQUE, roleId VARCHAR(255) UNIQUE);"
     );
 }
 
