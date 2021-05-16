@@ -11,7 +11,6 @@ export async function createDB() {
 
 export async function migrateDBToMySQL(ctx: Context) {
     const guild = ctx.guilds.get("649352572464922634")!;
-    let outputString = "";
 
     guild.members.forEach(async (member) => {
         let data = {
