@@ -46,7 +46,7 @@ const roleCommand: PalmCommandOptions = {
             guild.editRole(roleId, {
                 name: args.rolename,
                 color: Number("0x" + (args.hex as string).slice(1)),
-                hoist: true,
+                hoist: false,
                 reason: Strings.commands.roles.userChangedRole,
             });
 
