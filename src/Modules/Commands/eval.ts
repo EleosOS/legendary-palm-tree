@@ -34,7 +34,7 @@ const evalCommand: PalmCommandOptions = {
                 message = JSON.stringify(message, null, args.jsonspacing);
                 language = "json";
             }
-        } catch (error) {
+        } catch (error: any) {
             message = error ? error.stack || error.message : error;
         }
 
