@@ -1,9 +1,10 @@
 import { CommandClient, Constants, ShardClient } from "detritus-client";
 import Jimp from "jimp";
-import jsonFile from "jsonfile";
+import { DB } from "./";
 import { Config } from "../config";
 import { Signale, Strings } from "./";
 import Commands from "./Commands";
+import { RowDataPacket } from "mysql2";
 
 export const Bot = new CommandClient(Config.token, {
     prefixes: ["os", "i cast"],
@@ -11,7 +12,7 @@ export const Bot = new CommandClient(Config.token, {
     gateway: {
         intents: [
             "GUILDS",
-			"GUILD_MESSAGES",
+            "GUILD_MESSAGES",
             "GUILD_MEMBERS",
             "GUILD_WEBHOOKS",
             "DIRECT_MESSAGES",
@@ -57,6 +58,7 @@ export async function changeRecringeHue(amount: number) {
     const client = Bot.client as ShardClient;
     const guild = client.guilds.get("649352572464922634")!;
     const image = await Jimp.read(guild.iconUrl!);
+    let currentHue: number;
 
     image.color([{ apply: "hue", params: [amount] }]);
 
@@ -64,13 +66,32 @@ export async function changeRecringeHue(amount: number) {
         icon: await image.getBufferAsync("image/png"),
     });
 
-    let { currentHue } = await jsonFile.readFile("./src/db/hue.json");
-    currentHue = Number(currentHue);
-    currentHue += amount;
+    const result = await DB.query("SELECT currentHue from hue WHERE id = 1;");
 
-    if (currentHue >= 360) currentHue -= 360;
+    if (
+        result &&
+        (result[0] as RowDataPacket[]).length > 0 &&
+        (result[0] as any)[0].currentHue != undefined
+    ) {
+        currentHue = (result[0] as any)[0].currentHue;
 
-    jsonFile.writeFileSync("./src/db/hue.json", { currentHue });
+        currentHue += amount;
+
+        if (currentHue >= 360) {
+            currentHue -= 360;
+        }
+
+        await DB.query("UPDATE hue SET currentHue = ? WHERE id = 1", [
+            currentHue.toString(),
+        ]);
+    } else {
+        Signale.error({
+            prefix: "hue",
+            message: "changeRecringeHue failed at DB query!",
+        });
+
+        return;
+    }
 
     (await guild.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
         avatarUrl: client.user!.avatarUrl,

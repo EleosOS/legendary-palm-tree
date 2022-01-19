@@ -1,5 +1,5 @@
 import { PalmCommandOptions } from "./";
-import { Strings } from "../";
+import * as palmMod from "../"; // import all modules so they're accessable with eval
 import { Utils, Constants } from "detritus-client";
 
 const evalCommand: PalmCommandOptions = {
@@ -7,8 +7,9 @@ const evalCommand: PalmCommandOptions = {
     aliases: ["e"],
     metadata: {
         hidden: true,
-        description: Strings.containment.beta.stringClassifiedAccessDenied,
-        usage: Strings.containment.beta.classified,
+        description:
+            palmMod.Strings.containment.beta.stringClassifiedAccessDenied,
+        usage: palmMod.Strings.containment.beta.classified,
     },
     args: [
         { default: false, name: "noreply", type: "bool" },
@@ -16,7 +17,7 @@ const evalCommand: PalmCommandOptions = {
     ],
     onBefore: (ctx) => ctx.user.isClientOwner,
     onCancel: (ctx) =>
-        ctx.reply(Strings.commands.general.usageNotAllowed),
+        ctx.reply(palmMod.Strings.commands.general.usageNotAllowed),
     run: async (ctx, args) => {
         const { matches } = Utils.regex(
             Constants.DiscordRegexNames.TEXT_CODEBLOCK,
