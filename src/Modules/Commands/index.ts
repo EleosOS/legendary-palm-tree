@@ -5,7 +5,6 @@ import pingCommand from "./ping";
 import roleCommand from "./role";
 import roleRemoveCommand from "./role.remove";
 import roleInfoCommand from "./role.info";
-import migrateCommand from "./migrate";
 import purgeCommand from "./purge";
 import { CommandOptions } from "detritus-client/lib/command";
 
@@ -27,6 +26,5 @@ export default [
     roleCommand,
     roleRemoveCommand,
     roleInfoCommand,
-    migrateCommand,
     purgeCommand,
 ];
