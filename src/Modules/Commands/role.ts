@@ -46,7 +46,6 @@ const roleCommand: PalmCommandOptions = {
             guild.editRole(roleId, {
                 name: args.rolename,
                 color: Number("0x" + (args.hex as string).slice(1)),
-                hoist: false,
                 reason: Strings.commands.roles.userChangedRole,
             });
 
@@ -54,8 +53,7 @@ const roleCommand: PalmCommandOptions = {
         } else {
             const newRole = await guild.createRole({
                 name: args.rolename,
-                color: Number("0x" + (args.hex as string).slice(1)),
-                hoist: true,
+                color: Number("0x" + (args.hex as string).slice(1))
             });
 
             roleId = newRole.id;
