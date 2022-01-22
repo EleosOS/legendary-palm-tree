@@ -1,5 +1,5 @@
 import { PalmCommandOptions } from "./";
-import { Strings, DB } from "../";
+import { Strings, DB } from "../../";
 import { RowDataPacket } from "mysql2";
 
 const roleInfoCommand: PalmCommandOptions = {
@@ -17,16 +17,9 @@ const roleInfoCommand: PalmCommandOptions = {
     run: async (ctx) => {
         const guild = ctx.guilds.get("649352572464922634")!;
 
-        const result = await DB.query(
-            "SELECT roleId FROM customRoles WHERE userId = ?",
-            [ctx.userId]
-        );
+        const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [ctx.userId]);
 
-        if (
-            result &&
-            (result[0] as RowDataPacket[]).length > 0 &&
-            ((result[0] as any)[0].roleId as string).length > 0
-        ) {
+        if (result && (result[0] as RowDataPacket[]).length > 0 && ((result[0] as any)[0].roleId as string).length > 0) {
             const roleId = (result[0] as any)[0].roleId;
             const role = guild.roles.get(roleId)!;
 

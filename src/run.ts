@@ -1,8 +1,13 @@
-import { Bot, changeRecringeHue } from "./Modules/Bot";
+import { ApplicationCommandTypes } from "detritus-client/lib/constants";
+import { Bot, cluster, InteractionBot, changeRecringeHue } from "./Modules/Bot";
 import { Signale } from "./Modules/Signale";
+import { Utils, Constants } from "detritus-client";
 
 void (async () => {
+    await cluster.run();
     await Bot.run();
+    await InteractionBot.run();
+
     Signale.start({ prefix: "startup", message: "Bot ready" });
 
     const hueTrigger = new Date();

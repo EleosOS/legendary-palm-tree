@@ -1,36 +1,35 @@
-import { CommandClient, Constants, ShardClient } from "detritus-client";
+import { ClusterClient, CommandClient, Constants, InteractionCommandClient, ShardClient } from "detritus-client";
 import Jimp from "jimp";
 import { DB } from "./";
 import { Config } from "../config";
 import { Signale, Strings } from "./";
-import Commands from "./Commands";
+import { PingCommand } from "./Commands/slash/Ping";
 import { RowDataPacket } from "mysql2";
+import { ApplicationCommandTypes } from "detritus-client/lib/constants";
 
-export const Bot = new CommandClient(Config.token, {
-    prefixes: ["os", "i cast"],
-    useClusterClient: false,
+export const cluster = new ClusterClient(Config.token, {
     gateway: {
-        intents: [
-            "GUILDS",
-            "GUILD_MESSAGES",
-            "GUILD_MEMBERS",
-            "GUILD_WEBHOOKS",
-            "DIRECT_MESSAGES",
-        ],
+        intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS", "DIRECT_MESSAGES"],
         presence: {
             activity: {
                 name: "prefix: os",
-                type: 0,
-                /*type: 4,
-				emoji: {
-					name: ':white_circle:',
-					animated: false,
-					id: null
-				}*/
+                type: Constants.ActivityTypes.CUSTOM_STATUS,
+                emoji: {
+                    name: ":white_circle:",
+                    animated: false,
+                    id: null,
+                },
             },
         },
     },
 });
+
+export const Bot = new CommandClient(cluster, {
+    prefixes: ["os", "i cast"],
+    mentionsEnabled: true,
+});
+
+export const InteractionBot = new InteractionCommandClient(cluster);
 
 Bot.on(Constants.ClientEvents.COMMAND_FAIL, (e) => {
     Signale.fatal({ prefix: e.command.name + " - Fail", message: e.error });
@@ -68,11 +67,7 @@ export async function changeRecringeHue(amount: number) {
 
     const result = await DB.query("SELECT currentHue from hue WHERE id = 1;");
 
-    if (
-        result &&
-        (result[0] as RowDataPacket[]).length > 0 &&
-        (result[0] as any)[0].currentHue != undefined
-    ) {
+    if (result && (result[0] as RowDataPacket[]).length > 0 && (result[0] as any)[0].currentHue != undefined) {
         currentHue = (result[0] as any)[0].currentHue;
 
         currentHue += amount;
@@ -81,9 +76,7 @@ export async function changeRecringeHue(amount: number) {
             currentHue -= 360;
         }
 
-        await DB.query("UPDATE hue SET currentHue = ? WHERE id = 1", [
-            currentHue.toString(),
-        ]);
+        await DB.query("UPDATE hue SET currentHue = ? WHERE id = 1", [currentHue.toString()]);
     } else {
         Signale.error({
             prefix: "hue",
@@ -113,9 +106,32 @@ export async function changeRecringeHue(amount: number) {
     });
 }
 
-Bot.addMultiple(Commands);
+//Bot.addMultiple(Commands);
+InteractionBot.addMultiple([new PingCommand()]);
 
-const commandsSorted = Bot.commands.slice().sort((a, b) => {
+/*InteractionBot.add({
+    guildIds: ["649352572464922634"],
+    name: "pingo",
+    type: ApplicationCommandTypes.MESSAGE,
+    run: async (ctx, args) => {
+        let language = "js";
+        let message: unknown;
+        try {
+            message = ctx;
+            if (typeof message === "object") {
+                message = JSON.stringify(message, null, 2);
+                language = "json";
+            }
+        } catch (error: any) {
+            message = error ? error.stack || error.message : error;
+        }
+
+        const max = 1990 - language.length;
+        return ctx.editOrRespond(["```" + language, String(message).slice(0, max), "```"].join("\n"));
+    },
+});*/
+
+/*const commandsSorted = Bot.commands.slice().sort((a, b) => {
     const nameA = a.name.toUpperCase();
     const nameB = b.name.toUpperCase();
 
@@ -126,12 +142,12 @@ const commandsSorted = Bot.commands.slice().sort((a, b) => {
     } else {
         return 0;
     }
-});
+});*/
 
-commandsSorted.forEach((command) => {
+InteractionBot.commands.forEach((command) => {
     Signale.info({
         prefix: "startup",
-        message: "Command found:",
+        message: "InteractionCommand found:",
         suffix: command.name,
     });
 });

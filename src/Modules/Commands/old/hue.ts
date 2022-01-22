@@ -1,6 +1,6 @@
-import { changeRecringeHue } from "../Bot";
+import { changeRecringeHue } from "../../Bot";
 import { PalmCommandOptions } from ".";
-import { Strings } from '../';
+import { Strings } from "../../";
 
 const hueCommand: PalmCommandOptions = {
     name: "hue",
@@ -24,19 +24,14 @@ const hueCommand: PalmCommandOptions = {
             return false;
         }
     },
-    onCancelRun: (ctx) =>
-        ctx.editOrReply(
-            Strings.commands.hue.noIconOrUsageNotAllowed
-        ),
+    onCancelRun: (ctx) => ctx.editOrReply(Strings.commands.hue.noIconOrUsageNotAllowed),
     run: async (ctx, args) => {
         if (!args.amount) {
             args.amount = 10;
         }
 
         await changeRecringeHue(Number(args.amount));
-        return ctx.editOrReply(
-            Strings.commands.hue.iconHueManuallyChanged
-        );
+        return ctx.editOrReply(Strings.commands.hue.iconHueManuallyChanged);
     },
 };
 

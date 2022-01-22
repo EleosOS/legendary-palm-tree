@@ -1,5 +1,5 @@
 import { PalmCommandOptions } from "./";
-import { Strings } from "../";
+import { Strings } from "../../";
 
 const helpCommand: PalmCommandOptions = {
     name: "help",
@@ -25,26 +25,22 @@ const helpCommand: PalmCommandOptions = {
             } else if (command.metadata.hidden) {
                 return ctx.editOrReply(Strings.commands.help.doesntExist);
             } else {
-                return ctx.editOrReply(
-                    `ℹ  **os${command.name}**\n**Description:** ${command.metadata.description}\n**Usage:** ${command.metadata.usage}`
-                );
+                return ctx.editOrReply(`ℹ  **os${command.name}**\n**Description:** ${command.metadata.description}\n**Usage:** ${command.metadata.usage}`);
             }
         } else {
             let string = Strings.commands.help.listOfCommands;
-            const commandsSorted = ctx.commandClient.commands
-                .slice()
-                .sort((a, b) => {
-                    const nameA = a.name.toUpperCase();
-                    const nameB = b.name.toUpperCase();
+            const commandsSorted = ctx.commandClient.commands.slice().sort((a, b) => {
+                const nameA = a.name.toUpperCase();
+                const nameB = b.name.toUpperCase();
 
-                    if (nameA < nameB) {
-                        return -1;
-                    } else if (nameA > nameB) {
-                        return 1;
-                    } else {
-                        return 0;
-                    }
-                });
+                if (nameA < nameB) {
+                    return -1;
+                } else if (nameA > nameB) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
 
             commandsSorted.forEach((command) => {
                 if (command.metadata.hidden && !ctx.user.isClientOwner) return;

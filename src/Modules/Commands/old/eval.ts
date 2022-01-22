@@ -1,5 +1,5 @@
 import { PalmCommandOptions } from "./";
-import * as palmMod from "../"; // import all modules so they're accessable with eval
+import * as palmMod from "../../"; // import all modules so they're accessable with eval
 import { Utils, Constants } from "detritus-client";
 
 const evalCommand: PalmCommandOptions = {
@@ -7,8 +7,7 @@ const evalCommand: PalmCommandOptions = {
     aliases: ["e"],
     metadata: {
         hidden: true,
-        description:
-            palmMod.Strings.containment.beta.stringClassifiedAccessDenied,
+        description: palmMod.Strings.containment.beta.stringClassifiedAccessDenied,
         usage: palmMod.Strings.containment.beta.classified,
     },
     args: [
@@ -16,13 +15,9 @@ const evalCommand: PalmCommandOptions = {
         { default: 2, name: "jsonspacing", type: "number" },
     ],
     onBefore: (ctx) => ctx.user.isClientOwner,
-    onCancel: (ctx) =>
-        ctx.reply(palmMod.Strings.commands.general.usageNotAllowed),
+    onCancel: (ctx) => ctx.reply(palmMod.Strings.commands.general.usageNotAllowed),
     run: async (ctx, args) => {
-        const { matches } = Utils.regex(
-            Constants.DiscordRegexNames.TEXT_CODEBLOCK,
-            args.code
-        );
+        const { matches } = Utils.regex(Constants.DiscordRegexNames.TEXT_CODEBLOCK, args.code);
         if (matches.length) {
             args.code = matches[0].text;
         }
@@ -41,11 +36,7 @@ const evalCommand: PalmCommandOptions = {
 
         const max = 1990 - language.length;
         if (!args.noreply) {
-            return ctx.reply(
-                ["```" + language, String(message).slice(0, max), "```"].join(
-                    "\n"
-                )
-            );
+            return ctx.reply(["```" + language, String(message).slice(0, max), "```"].join("\n"));
         }
     },
     onError: (context, args, error) => {

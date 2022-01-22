@@ -1,6 +1,6 @@
 import { PalmCommandOptions } from "./";
-import { Signale, Strings, DB } from "../";
-import { Config } from "../../config";
+import { Signale, Strings, DB } from "../../";
+import { Config } from "../../../config";
 import { RowDataPacket } from "mysql2";
 
 const roleCommand: PalmCommandOptions = {
@@ -20,9 +20,7 @@ const roleCommand: PalmCommandOptions = {
         return /^#?([0-9A-Fa-f]{6})$/.test(args.hex) && args.rolename;
     },
     onCancelRun: (ctx) => {
-        return ctx.editOrReply(
-            Strings.commands.general.argsIncorrectOrIncomplete
-        );
+        return ctx.editOrReply(Strings.commands.general.argsIncorrectOrIncomplete);
     },
     run: async (ctx, args) => {
         ctx.command!.metadata.edited = false;
@@ -30,17 +28,10 @@ const roleCommand: PalmCommandOptions = {
         const guild = ctx.guilds.get("649352572464922634")!;
         let roleId: string;
 
-        const result = await DB.query(
-            "SELECT roleId FROM customRoles WHERE userId = ?",
-            [ctx.userId]
-        );
+        const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [ctx.userId]);
 
         // result was successful AND result contains something AND the roleId of the result is not empty
-        if (
-            result &&
-            (result[0] as RowDataPacket[]).length > 0 &&
-            ((result[0] as any)[0].roleId as string).length > 0
-        ) {
+        if (result && (result[0] as RowDataPacket[]).length > 0 && ((result[0] as any)[0].roleId as string).length > 0) {
             roleId = (result[0] as any)[0].roleId;
 
             guild.editRole(roleId, {
@@ -53,7 +44,7 @@ const roleCommand: PalmCommandOptions = {
         } else {
             const newRole = await guild.createRole({
                 name: args.rolename,
-                color: Number("0x" + (args.hex as string).slice(1))
+                color: Number("0x" + (args.hex as string).slice(1)),
             });
 
             roleId = newRole.id;
@@ -67,10 +58,7 @@ const roleCommand: PalmCommandOptions = {
             },
         ]);
 
-        await DB.query("UPDATE customRoles SET roleId = ? WHERE userId = ?", [
-            roleId,
-            ctx.userId,
-        ]);
+        await DB.query("UPDATE customRoles SET roleId = ? WHERE userId = ?", [roleId, ctx.userId]);
     },
     onSuccess: async (ctx, args) => {
         const guild = ctx.guilds.get("649352572464922634")!;
