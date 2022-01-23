@@ -1,6 +1,6 @@
 export const Strings = {
     bot: {
-        error: "⚠  **Something went wrong. Error:** `?`",
+        error: "⚠  **Something went wrong.** `?`",
         ratelimitReached: "⚠  **You've reached the ratelimit. Slow down.**",
     },
     commands: {
@@ -27,9 +27,9 @@ export const Strings = {
             roleCreated: "✅  **Custom role created.**",
         },
         purge: {
-            fetchingMessages: "Fetching messages...",
-            failed: "⚠  **There were not enough messages to purge.**",
             deletedMessages: "✅  **Deleted ? messages.**",
+            failedNotEnough: "⚠  **There were not enough messages to purge.**",
+            failedInvalidArgs: "⚠  **Only 2-100 messages at a time can be deleted.**",
         },
     },
     containment: {

@@ -7,13 +7,6 @@
         {
             "type": "pwa-node",
             "request": "launch",
-            "name": "Interactions Example",
-            "skipFiles": ["<node_internals>/**"],
-            "program": "${workspaceFolder}\\build\\redo\\run.js",
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
             "name": "Launch Program",
             "skipFiles": ["<node_internals>/**"],
             "program": "${workspaceFolder}\\build\\run.js",

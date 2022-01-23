@@ -1,12 +1,23 @@
-import { ApplicationCommandTypes } from "detritus-client/lib/constants";
-import { Bot, cluster, InteractionBot, changeRecringeHue } from "./Modules/Bot";
+import { InteractionBot, changeRecringeHue } from "./Modules/Bot";
+import Commands from "./Modules/Commands";
 import { Signale } from "./Modules/Signale";
-import { Utils, Constants } from "detritus-client";
 
 void (async () => {
-    await cluster.run();
-    await Bot.run();
+    InteractionBot.addMultiple(Commands);
+
+    InteractionBot.commands.forEach((command) => {
+        Signale.info({
+            prefix: "startup",
+            message: "InteractionCommand found:",
+            suffix: command.name,
+        });
+    });
+
     await InteractionBot.run();
+
+    //InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+
+    //InteractionBot.checkAndUploadCommands();
 
     Signale.start({ prefix: "startup", message: "Bot ready" });
 
