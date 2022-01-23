@@ -76,7 +76,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     }
 
     onPermissionsFail(ctx: Interaction.InteractionContext) {
-        Signale.info({
+        Signale.note({
             prefix: "command",
             message: `PermissionsFail - ${ctx.command.name} used by ${ctx.user.name}#${ctx.user.discriminator}}`,
         });

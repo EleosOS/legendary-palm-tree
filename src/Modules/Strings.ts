@@ -15,8 +15,8 @@ export const Strings = {
             moreInfos: "\n\n**For more infos on a command, type `oshelp [command]`.**",
         },
         hue: {
-            noIconOrUsageNotAllowed: "⚠  **This server doesn't have an icon or you're not allowed to use this command.**",
-            iconHueManuallyChanged: "✅  **The server icon hue has been manually changed.**",
+            noIcon: "⚠  **This server doesn't have an icon.**",
+            iconHueManuallyChanged: "✅  **The server icon hue has been manually changed by ?°.**",
         },
         roles: {
             userRemovedRole: "User removed custom role",
