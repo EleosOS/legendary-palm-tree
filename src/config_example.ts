@@ -1,3 +1,5 @@
+// Rename config_example.ts to config.ts
+
 export const Config = {
     token: "", // Bot Token
     guildId: "", // ID of the server on which the bot should work on
