@@ -21,10 +21,9 @@ export const Strings = {
         roles: {
             userRemovedRole: "User removed custom role",
             userChangedRole: "User changed role settings",
+            badHex: "⚠  ? is not a valid hex code.",
             noRole: "⚠  **This user doesn't have a custom role.**",
             roleRemoved: "✅  **Custom role removed.**",
-            roleEdited: "✅  **Custom role edited.**",
-            roleCreated: "✅  **Custom role created.**",
         },
         purge: {
             deletedMessages: "✅  **Deleted ? messages.**",

@@ -1,12 +1,12 @@
 import { Interaction, Structures } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib/constants";
-import { Embed } from "detritus-client/lib/utils";
 import { RowDataPacket } from "mysql2";
 
 // This is ridiculous
 import { Config } from "../../../../config";
 import { Strings, DB } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
+import { createInfoEmbed } from "./createInfoEmbed";
 
 interface RoleInfoArgs {
     user: Structures.Member | Structures.User;
@@ -44,34 +44,8 @@ class RoleInfoCommand extends BaseCommandOption {
             const roleId = (result[0] as any)[0].roleId;
             const role = guild.roles.get(roleId)!;
 
-            const embed = new Embed({
-                author: {
-                    name: `Custom Role of ${args.user.name}#${args.user.discriminator}`,
-                    icon_url: args.user.avatarUrl,
-                },
-                title: role.name,
-                fields: [
-                    {
-                        name: "Color",
-                        value: `#${role.color.toString(16)}`,
-                        inline: true,
-                    },
-                    {
-                        name: "Positon",
-                        value: `${role.position}`,
-                        inline: true,
-                    },
-                    {
-                        name: "Mention",
-                        value: role.mention,
-                        inline: true,
-                    },
-                ],
-                color: role.color,
-            });
-
             return ctx.editOrRespond({
-                embeds: [embed],
+                embeds: [createInfoEmbed(args.user, role)],
                 flags: MessageFlags.EPHEMERAL,
             });
         } else {
