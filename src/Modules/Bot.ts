@@ -19,7 +19,7 @@ export const InteractionBot = new InteractionCommandClient(Config.token, {
 
 export async function changeRecringeHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
-    const guild = client.guilds.get("649352572464922634")!;
+    const guild = client.guilds.get(Config.guildId)!;
     const image = await Jimp.read(guild.iconUrl!);
     let currentHue: number;
 

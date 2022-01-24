@@ -3,6 +3,8 @@ import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib
 import { Embed } from "detritus-client/lib/utils";
 import { RowDataPacket } from "mysql2";
 
+// This is ridiculous
+import { Config } from "../../../../config";
 import { Strings, DB } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 
@@ -34,7 +36,7 @@ class RoleInfoCommand extends BaseCommandOption {
     }
 
     async run(ctx: Interaction.InteractionContext, args: RoleInfoArgs) {
-        const guild = ctx.guilds.get("649352572464922634")!;
+        const guild = ctx.guilds.get(Config.guildId)!;
 
         const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [args.user.id]);
 
@@ -70,6 +72,7 @@ class RoleInfoCommand extends BaseCommandOption {
 
             return ctx.editOrRespond({
                 embeds: [embed],
+                flags: MessageFlags.EPHEMERAL,
             });
         } else {
             return ctx.editOrRespond({

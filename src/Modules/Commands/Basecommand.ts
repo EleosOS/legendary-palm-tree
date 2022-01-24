@@ -1,10 +1,11 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
 import { Strings, Signale } from "../";
+import { Config } from "../../config";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
 export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommand<ParsedArgsFinished> {
-    guildIds = new BaseSet(["649352572464922634"]);
+    guildIds = new BaseSet([Config.guildId]);
     global = false;
 
     onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, error: any) {
