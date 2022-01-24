@@ -12,7 +12,7 @@ class HueCommand extends BaseSlashCommand {
     constructor() {
         super({
             name: "hue",
-            description: "(ADMIN) Changes the hue of the server picture by the specified amount",
+            description: "[ADMIN] Changes the hue of the server picture by the specified amount",
             permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
                 duration: 10000,

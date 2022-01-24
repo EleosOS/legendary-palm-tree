@@ -6,7 +6,7 @@ import { Message } from "detritus-client/lib/structures";
 import { Strings } from "../..";
 import { BaseSlashCommand } from "../Basecommand";
 
-interface PurgeCommandArgs {
+interface PurgeArgs {
     amount: number;
 }
 
@@ -14,7 +14,7 @@ class PurgeCommand extends BaseSlashCommand {
     constructor() {
         super({
             name: "purge",
-            description: "(ADMIN) Deletes 2-100 messages in a channel.",
+            description: "[ADMIN] Deletes 2-100 messages in a channel.",
             disableDm: true,
             permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
@@ -34,7 +34,7 @@ class PurgeCommand extends BaseSlashCommand {
         });
     }
 
-    async onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeCommandArgs) {
+    async onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeArgs) {
         return !(args.amount < 2 || args.amount > 100);
     }
 
@@ -45,7 +45,7 @@ class PurgeCommand extends BaseSlashCommand {
         });
     }
 
-    async run(ctx: Interaction.InteractionContext, args: PurgeCommandArgs) {
+    async run(ctx: Interaction.InteractionContext, args: PurgeArgs) {
         const messages: BaseCollection<string, Message> = await ctx.channel!.fetchMessages({
             limit: args.amount,
         });

@@ -21,7 +21,7 @@ export const Strings = {
         roles: {
             userRemovedRole: "User removed custom role",
             userChangedRole: "User changed role settings",
-            noRole: "⚠  **You don't have a custom role.**",
+            noRole: "⚠  **This user doesn't have a custom role.**",
             roleRemoved: "✅  **Custom role removed.**",
             roleEdited: "✅  **Custom role edited.**",
             roleCreated: "✅  **Custom role created.**",
