@@ -1,7 +1,7 @@
 import { BaseSlashCommand } from "../Basecommand";
 
 import RoleCreateCommand from "./role/Create";
-import RoleInfoCommand from "./role/Info";
+import RoleInfoCommand from "./role/Inspect";
 import RoleRemoveCommand from "./role/Remove";
 
 class RoleGroupCommand extends BaseSlashCommand {

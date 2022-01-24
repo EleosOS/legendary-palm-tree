@@ -7,13 +7,7 @@ import { RowDataPacket } from "mysql2";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {
-        intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS", "GUILD_WEBHOOKS", "DIRECT_MESSAGES"],
-        presence: {
-            activity: {
-                name: "prefix: os",
-                type: Constants.ActivityTypes.PLAYING,
-            },
-        },
+        intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_WEBHOOKS"],
     },
 });
 

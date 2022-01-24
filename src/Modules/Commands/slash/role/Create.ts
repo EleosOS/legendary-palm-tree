@@ -107,14 +107,14 @@ class RoleCreateCommand extends BaseCommandOption {
         });
 
         ctx.editOrRespond({
-            embeds: [embed],
+            embed: embed,
             flags: MessageFlags.EPHEMERAL,
         });
 
         const webhooks = await guild.fetchWebhooks();
         webhooks.get(Config.webhooks.customRoles)!.execute({
             avatarUrl: ctx.me!.avatarUrl,
-            embeds: [embed],
+            embed: embed,
         });
     }
 }

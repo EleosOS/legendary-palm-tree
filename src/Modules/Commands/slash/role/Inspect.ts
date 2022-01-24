@@ -8,14 +8,14 @@ import { Strings, DB } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
-interface RoleInfoArgs {
+interface RoleInspectArgs {
     user: Structures.Member | Structures.User;
 }
 
-class RoleInfoCommand extends BaseCommandOption {
+class RoleInspectCommand extends BaseCommandOption {
     constructor() {
         super({
-            name: "info",
+            name: "inspect",
             description: "Lists info on the custom role of a user",
             disableDm: true,
             ratelimit: {
@@ -35,7 +35,7 @@ class RoleInfoCommand extends BaseCommandOption {
         });
     }
 
-    async run(ctx: Interaction.InteractionContext, args: RoleInfoArgs) {
+    async run(ctx: Interaction.InteractionContext, args: RoleInspectArgs) {
         const guild = ctx.guilds.get(Config.guildId)!;
 
         const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [args.user.id]);
@@ -45,7 +45,7 @@ class RoleInfoCommand extends BaseCommandOption {
             const role = guild.roles.get(roleId)!;
 
             return ctx.editOrRespond({
-                embeds: [createInfoEmbed(args.user, role)],
+                embed: createInfoEmbed(args.user, role),
                 flags: MessageFlags.EPHEMERAL,
             });
         } else {
@@ -57,4 +57,4 @@ class RoleInfoCommand extends BaseCommandOption {
     }
 }
 
-export default RoleInfoCommand;
+export default RoleInspectCommand;
