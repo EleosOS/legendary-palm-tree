@@ -1,30 +1,7 @@
-import evalCommand from "./eval";
-import helpCommand from "./help";
-import hueCommand from "./hue";
-import pingCommand from "./ping";
-import roleCommand from "./role";
-import roleRemoveCommand from "./role.remove";
-import roleInfoCommand from "./role.info";
-import purgeCommand from "./purge";
-import { CommandOptions } from "detritus-client/lib/command";
+import HelpCommand from "./slash/Help";
+import HueCommand from "./slash/Hue";
+import PingCommand from "./slash/Ping";
+import PurgeCommand from "./slash/Purge";
+import RoleGroupCommand from "./slash/RoleGroup";
 
-export interface PalmCommandOptions extends CommandOptions {
-    name: string;
-    metadata: {
-        hidden?: boolean;
-        description: string;
-        usage: string;
-        [key: string]: any;
-    };
-}
-
-export default [
-    evalCommand,
-    helpCommand,
-    hueCommand,
-    pingCommand,
-    roleCommand,
-    roleRemoveCommand,
-    roleInfoCommand,
-    purgeCommand,
-];
+export default [new HelpCommand(), new HueCommand(), new PingCommand(), new PurgeCommand(), new RoleGroupCommand()];
