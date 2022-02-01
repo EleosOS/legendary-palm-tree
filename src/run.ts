@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import { InteractionBot, changeRecringeHue } from "./Modules/Bot";
 import Commands from "./Modules/Commands";
 import { Signale } from "./Modules/Signale";
