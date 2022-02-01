@@ -1,5 +1,5 @@
 export interface Hue {
-    id: number;
-    hue: number;
+    readonly id: number;
+    currentHue: number;
 }
 // This is worth it.

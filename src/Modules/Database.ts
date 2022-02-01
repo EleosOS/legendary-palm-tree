@@ -13,7 +13,7 @@ class Database {
                 user: Config.db.username,
                 password: Config.db.password,
                 database: Config.db.db,
-                connectionLimit: 2,
+                connectionLimit: Config.db.connectionLimit,
             })
             .promise();
     }
@@ -22,12 +22,12 @@ class Database {
         if (err.fatal) {
             return Signale.fatal({
                 prefix: "DB",
-                message: `${err.code} - ${err.message}`,
+                err: err,
             });
         } else {
             return Signale.error({
                 prefix: "DB",
-                message: `${err.code} - ${err.message}`,
+                err: err,
             });
         }
     }
@@ -35,12 +35,10 @@ class Database {
     async query(sql: string, values?: string[]) {
         let result;
 
-        result = await this.pool
-            .execute(sql, values)
-            .catch((err: mysql.QueryError) => {
-                this.sqlErrorLog(err);
-                return null;
-            });
+        result = await this.pool.execute(sql, values).catch((err: mysql.QueryError) => {
+            this.sqlErrorLog(err);
+            return null;
+        });
 
         return result;
     }

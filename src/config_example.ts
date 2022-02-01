@@ -12,5 +12,6 @@ export const Config = {
         username: "palm", // Server username
         password: "", // Server password
         db: "palmdb", // Database name
+        connectionLimit: 2, // Maximum amount of connections that the bot will make to the DB at a time
     },
 };
