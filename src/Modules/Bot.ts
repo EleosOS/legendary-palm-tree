@@ -1,9 +1,10 @@
 import { ClusterClient, CommandClient, Constants, InteractionCommandClient, ShardClient } from "detritus-client";
 import Jimp from "jimp";
-import { DB } from "./";
+import { getConnection } from "typeorm";
+
 import { Config } from "../config";
 import { Signale, Strings } from "./";
-import { RowDataPacket } from "mysql2";
+import { Hue } from "../Entities/hue";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {
@@ -12,42 +13,65 @@ export const InteractionBot = new InteractionCommandClient(Config.token, {
 });
 
 export async function changeRecringeHue(amount: number) {
+    const connection = getConnection();
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
     const guild = client.guilds.get(Config.guildId)!;
-    const image = await Jimp.read(guild.iconUrl!);
-    let currentHue: number;
 
+    // Check for guild image
+    if (guild.iconUrl === null) {
+        Signale.warn({
+            prefix: "hue",
+            message: "Guild does not have an icon to change the hue of.",
+        });
+
+        return false;
+    }
+
+    // Save new hue
+    let result;
+
+    try {
+        result = await connection.manager.findOne(Hue, 1);
+    } catch (err) {
+        Signale.error({
+            prefix: "hue",
+            err: err,
+        });
+    }
+
+    if (result) {
+        result.currentHue += amount;
+
+        if (result.currentHue >= 360) {
+            result.currentHue -= 360;
+        }
+
+        await result.save();
+    } else {
+        result = connection.manager.create(Hue, { currentHue: 10 });
+
+        await result.save();
+
+        Signale.warn({
+            prefix: "hue",
+            message: `No hue existed in the DB. A new hue for the server was saved as 10 (id: ${result.id}), you can edit this with the command /hue override.`,
+        });
+    }
+
+    // Change guild image
+    // TODO: Finally make this work with gifs
+    const image = await Jimp.read(guild.iconUrl);
     image.color([{ apply: "hue", params: [amount] }]);
 
-    await guild!.edit({
+    await guild.edit({
         icon: await image.getBufferAsync("image/png"),
     });
 
-    const result = await DB.query("SELECT currentHue from hue WHERE id = 1;");
-
-    if (result && (result[0] as RowDataPacket[]).length > 0 && (result[0] as any)[0].currentHue != undefined) {
-        currentHue = (result[0] as any)[0].currentHue;
-
-        currentHue += amount;
-
-        if (currentHue >= 360) {
-            currentHue -= 360;
-        }
-
-        await DB.query("UPDATE hue SET currentHue = ? WHERE id = 1", [currentHue.toString()]);
-    } else {
-        Signale.error({
-            prefix: "hue",
-            message: "changeRecringeHue failed at DB query!",
-        });
-
-        return;
-    }
-
+    // Notify
     (await guild.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
         avatarUrl: client.user!.avatarUrl,
         embed: {
-            title: `Hue has been changed. (${currentHue})`,
+            title: `Hue has been changed. (${result.currentHue})`,
             author: {
                 name: "os",
                 iconUrl: client.user!.avatarUrl,
@@ -60,8 +84,10 @@ export async function changeRecringeHue(amount: number) {
 
     Signale.note({
         prefix: "hue",
-        message: `Hue has been changed. (${currentHue})`,
+        message: `Guild icon hue has been changed. (${result.currentHue})`,
     });
+
+    return true;
 }
 
 /*const commandsSorted = Bot.commands.slice().sort((a, b) => {
