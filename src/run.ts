@@ -30,16 +30,23 @@ void (async () => {
         });
     });
 
-    await InteractionBot.run();
+    await InteractionBot.run({
+        delay: 5000,
+    });
 
-    //InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+    // Clean up guild slash commands
+    await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
 
-    //InteractionBot.checkAndUploadCommands();
+    // Clean up global slash commands
+    //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+
+    // Force the upload of known slash commands
+    //await InteractionBot.checkAndUploadCommands(true);
 
     Signale.start({ prefix: "startup", message: "Bot ready" });
 
     // Check for guild
-    const guild = (InteractionBot.client as ClusterClient).shards.first()!.guilds.get(Config.guildId)!;
+    const guild = (InteractionBot.client as ClusterClient).shards.first()!.guilds.get(Config.guildId);
 
     if (guild === undefined) {
         Signale.fatal({
@@ -47,7 +54,7 @@ void (async () => {
             message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
         });
 
-        return;
+        throw new Error("Guild not found");
     }
 
     // Schedule hue change

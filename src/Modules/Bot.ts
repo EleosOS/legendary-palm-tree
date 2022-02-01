@@ -1,10 +1,9 @@
-import { ClusterClient, CommandClient, Constants, InteractionCommandClient, ShardClient } from "detritus-client";
+import { ClusterClient, InteractionCommandClient } from "detritus-client";
 import Jimp from "jimp";
-import { getConnection } from "typeorm";
 
-import { Config } from "../config";
-import { Signale, Strings } from "./";
 import { Hue } from "../Entities/hue";
+import { Config } from "../config";
+import { Signale } from "./";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {
@@ -13,7 +12,6 @@ export const InteractionBot = new InteractionCommandClient(Config.token, {
 });
 
 export async function changeRecringeHue(amount: number) {
-    const connection = getConnection();
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
     const guild = client.guilds.get(Config.guildId)!;
 

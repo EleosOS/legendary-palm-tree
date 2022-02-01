@@ -4,7 +4,7 @@
   "description": "discord bot",
   "author": "Eleos",
   "link": "",
-  "license": "MIT",
+  "license": "",
   "engines": {
     "node": ">=17.0.0"
   },
@@ -13,7 +13,7 @@
     "@types/signale": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
-    "detritus-client": "^0.16.3",
+    "detritus-client": "^0.16.4-beta.6",
     "jimp": "^0.16.1",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
@@ -24,11 +24,10 @@
   "devDependencies": {
     "eslint": "^8.7.0"
   },
-  "main": "./run.js",
+  "main": "./build/run.js",
   "scripts": {
     "compile": "tsc",
-    "tsc": "tsc",
-    "prestart": "tsc --incremental",
+    "prestart": "tsc",
     "start": "node build/run.js"
   }
 }

@@ -65,7 +65,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     }
 
     onRatelimit(ctx: Interaction.InteractionContext) {
-        Signale.warn({
+        Signale.info({
             prefix: "ratelimit",
             message: `${ctx.user.name}#${ctx.user.discriminator} has reached ratelimit of ${ctx.command.name}.`,
         });
