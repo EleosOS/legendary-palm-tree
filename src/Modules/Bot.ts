@@ -28,16 +28,7 @@ export async function changeRecringeHue(amount: number) {
     }
 
     // Save new hue
-    let result;
-
-    try {
-        result = await connection.manager.findOne(Hue, 1);
-    } catch (err) {
-        Signale.error({
-            prefix: "hue",
-            err: err,
-        });
-    }
+    let result = await Hue.findOne(1);
 
     if (result) {
         result.currentHue += amount;
@@ -46,11 +37,26 @@ export async function changeRecringeHue(amount: number) {
             result.currentHue -= 360;
         }
 
-        await result.save();
+        try {
+            await result.save();
+        } catch (err) {
+            Signale.error({
+                prefix: "hue",
+                err: err,
+            });
+        }
     } else {
-        result = connection.manager.create(Hue, { currentHue: 10 });
+        result = new Hue();
+        result.currentHue = 10;
 
-        await result.save();
+        try {
+            await result.save();
+        } catch (err) {
+            Signale.error({
+                prefix: "hue",
+                err: err,
+            });
+        }
 
         Signale.warn({
             prefix: "hue",
