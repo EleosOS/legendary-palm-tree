@@ -30,10 +30,6 @@ void (async () => {
         });
     });
 
-    /*await InteractionBot.run({
-        delay: 30000,
-    });*/
-
     await InteractionBot.run();
 
     // Clean up guild slash commands
@@ -48,16 +44,21 @@ void (async () => {
     Signale.start({ prefix: "startup", message: "Bot ready" });
 
     // Check for guild
-    /*const guild = (InteractionBot.client as ClusterClient).shards.first()!.guilds.get(Config.guildId);
-
-    if (guild === undefined) {
+    try {
+        await InteractionBot.rest.fetchGuild(Config.guildId);
+    } catch (err) {
         Signale.fatal({
             prefix: "startup",
             message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
         });
 
-        throw new Error("Guild not found");
-    }*/
+        Signale.fatal({
+            prefix: "startup",
+            message: "Exiting...",
+        });
+
+        throw new Error();
+    }
 
     // Schedule hue change
     const hueTrigger = new Date();
