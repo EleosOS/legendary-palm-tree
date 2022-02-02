@@ -30,12 +30,14 @@ void (async () => {
         });
     });
 
-    await InteractionBot.run({
-        delay: 5000,
-    });
+    /*await InteractionBot.run({
+        delay: 30000,
+    });*/
+
+    await InteractionBot.run();
 
     // Clean up guild slash commands
-    await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
+    //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
 
     // Clean up global slash commands
     //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
@@ -46,7 +48,7 @@ void (async () => {
     Signale.start({ prefix: "startup", message: "Bot ready" });
 
     // Check for guild
-    const guild = (InteractionBot.client as ClusterClient).shards.first()!.guilds.get(Config.guildId);
+    /*const guild = (InteractionBot.client as ClusterClient).shards.first()!.guilds.get(Config.guildId);
 
     if (guild === undefined) {
         Signale.fatal({
@@ -55,7 +57,7 @@ void (async () => {
         });
 
         throw new Error("Guild not found");
-    }
+    }*/
 
     // Schedule hue change
     const hueTrigger = new Date();

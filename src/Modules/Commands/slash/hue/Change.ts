@@ -1,17 +1,17 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { Strings, changeRecringeHue } from "../..";
-import { BaseSlashCommand } from "../Basecommand";
+import { Strings, changeRecringeHue } from "../../..";
+import { BaseCommandOption } from "../../Basecommand";
 
-interface HueCommandArgs {
+interface HueChangeCommandArgs {
     amount: number;
 }
 
-class HueCommand extends BaseSlashCommand {
+class HueChangeCommand extends BaseCommandOption {
     constructor() {
         super({
-            name: "hue",
+            name: "change",
             description: "[ADMIN] Changes the hue of the server picture by the specified amount",
             permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
@@ -41,7 +41,7 @@ class HueCommand extends BaseSlashCommand {
         });
     }
 
-    async run(ctx: Interaction.InteractionContext, args: HueCommandArgs) {
+    async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {
         if (args.amount === 0) {
             args.amount = 10;
         }
@@ -55,4 +55,4 @@ class HueCommand extends BaseSlashCommand {
     }
 }
 
-export default HueCommand;
+export default HueChangeCommand;
