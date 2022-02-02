@@ -14,7 +14,7 @@ class PingCommand extends BaseSlashCommand {
     async run(ctx: Interaction.InteractionContext) {
         const { gateway, rest } = await ctx.client.ping();
 
-        return this.ephEoR(ctx, `Pong! - Gateway: \`${gateway}ms\` Rest: \`${rest}ms\``);
+        return this.ephEoR(ctx, `Pong! - Gateway: \`${gateway}ms\` Rest: \`${rest}ms\``, 0);
     }
 }
 

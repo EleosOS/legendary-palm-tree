@@ -2,7 +2,6 @@ import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
 import { Hue } from "../../../../Entities";
-import { Strings } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { Config } from "../../../../config";
 
@@ -37,28 +36,19 @@ class HueOverwriteCommand extends BaseCommandOption {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return ctx.editOrRespond({
-            content: Strings.commands.hue.noIcon,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueOverwriteCommandArgs) {
         if (args.amount < 0 || args.amount > 360) {
-            return ctx.editOrRespond({
-                content: "⚠  **amount needs to be between 0 and 360.**",
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, "`amount` needs to be between 0 and 360.", 2);
         }
 
         // Find Hue
         const hue = await Hue.findOne(1);
 
         if (!hue) {
-            return ctx.editOrRespond({
-                content: "⚠  **No hue value is saved in the Database, it needs to be changed once.**",
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, "No hue value is saved in the Database, it needs to be changed once.", 3);
         }
 
         // Save new value
@@ -78,7 +68,7 @@ class HueOverwriteCommand extends BaseCommandOption {
             },
         });
 
-        return this.ephEoR(ctx, `✅  **Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore}).**`);
+        return this.ephEoR(ctx, `Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore}).`, 1);
     }
 }
 

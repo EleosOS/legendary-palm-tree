@@ -3,7 +3,7 @@ import { MessageFlags } from "detritus-client/lib/constants";
 
 import { CustomRole } from "../../../../Entities";
 import { Config } from "../../../../config";
-import { Signale, Strings } from "../../..";
+import { Signale } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 
 class RoleRemoveCommand extends BaseCommandOption {
@@ -26,12 +26,12 @@ class RoleRemoveCommand extends BaseCommandOption {
 
         if (result) {
             await guild.deleteRole(result.roleId, {
-                reason: Strings.commands.roles.userRemovedRole,
+                reason: "User removed custom role",
             });
 
             result.remove();
         } else {
-            return this.ephEoR(ctx, Strings.commands.roles.noRole);
+            return this.ephEoR(ctx, "This user doesn't have a custom role.", 2);
         }
     }
 
@@ -54,7 +54,7 @@ class RoleRemoveCommand extends BaseCommandOption {
             },
         });
 
-        return this.ephEoR(ctx, Strings.commands.roles.roleRemoved);
+        return this.ephEoR(ctx, "Custom role removed.", 1);
     }
 }
 

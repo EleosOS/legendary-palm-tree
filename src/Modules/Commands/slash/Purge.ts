@@ -3,7 +3,6 @@ import { BaseCollection } from "detritus-client/lib/collections";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 import { Message } from "detritus-client/lib/structures";
 
-import { Strings } from "../..";
 import { BaseSlashCommand } from "../Basecommand";
 
 interface PurgeArgs {
@@ -39,7 +38,7 @@ class PurgeCommand extends BaseSlashCommand {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, Strings.commands.purge.failedInvalidArgs);
+        return this.ephEoR(ctx, "Only 2-100 messages can be deleted at a time.", 2);
     }
 
     async run(ctx: Interaction.InteractionContext, args: PurgeArgs) {
@@ -48,10 +47,7 @@ class PurgeCommand extends BaseSlashCommand {
         });
 
         if (messages.length < 2) {
-            return ctx.editOrRespond({
-                content: Strings.commands.purge.failedNotEnough,
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, "There were not enough messages to purge.", 2);
         }
 
         return ctx.channel
@@ -61,7 +57,7 @@ class PurgeCommand extends BaseSlashCommand {
                 })
             )
             .then(() => {
-                this.ephEoR(ctx, Strings.commands.purge.deletedMessages.replace("?", args.amount.toString()));
+                this.ephEoR(ctx, `Deleted ${args.amount} messages.`, 1);
             });
     }
 }

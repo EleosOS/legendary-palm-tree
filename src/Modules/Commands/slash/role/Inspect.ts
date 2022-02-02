@@ -3,7 +3,6 @@ import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib
 
 import { CustomRole } from "../../../../Entities";
 import { Config } from "../../../../config";
-import { Strings } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
@@ -44,7 +43,7 @@ class RoleInspectCommand extends BaseCommandOption {
 
             return this.ephEoR(ctx, { embed: createInfoEmbed(args.user, role) });
         } else {
-            return this.ephEoR(ctx, Strings.commands.roles.noRole);
+            return this.ephEoR(ctx, "This user doesn't have a custom role.", 2);
         }
     }
 }

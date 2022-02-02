@@ -1,7 +1,7 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { Strings, changeRecringeHue } from "../../..";
+import { changeRecringeHue } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 
 interface HueChangeCommandArgs {
@@ -35,7 +35,7 @@ class HueChangeCommand extends BaseCommandOption {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, Strings.commands.hue.noIcon);
+        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {
@@ -45,7 +45,7 @@ class HueChangeCommand extends BaseCommandOption {
 
         await changeRecringeHue(args.amount);
 
-        return this.ephEoR(ctx, Strings.commands.hue.iconHueManuallyChanged.replace("?", args.amount.toString()));
+        return this.ephEoR(ctx, `The server icon hue has been manually changed by ${args.amount}°`, 1);
     }
 }
 

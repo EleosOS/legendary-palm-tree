@@ -1,58 +1,87 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
-import { Strings, Signale } from "../";
+import { Signale } from "../";
 import { Config } from "../../config";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
+enum EoRStatus {
+    NONE = 0,
+    SUCCESS = 1,
+    WARNING = 2,
+    FAIL = 3,
+    INFO = 4,
+}
+
 /**
- * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral.
+ * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral and edits strings into the normal form.
  * @param ctx
  * @param options
+ * @param status What icon to add to the content
  * @returns Promise<unknown>
  */
-function ephEoR(ctx: Interaction.InteractionContext, options: string | Structures.InteractionEditOrRespond) {
-    let result: Structures.InteractionEditOrRespond = {
+function ephEoR(ctx: Interaction.InteractionContext, options: string | Structures.InteractionEditOrRespond, status?: EoRStatus) {
+    let response: Structures.InteractionEditOrRespond = {
         flags: MessageFlags.EPHEMERAL,
     };
 
     if (typeof options === "string") {
-        result.content = options;
+        // Put string into norm and add status
+        switch (status) {
+            case undefined:
+                options = `**${options}**`;
+                break;
+
+            case EoRStatus.NONE:
+                break;
+
+            case EoRStatus.SUCCESS:
+                options = `✅  **${options}**`;
+                break;
+
+            case EoRStatus.WARNING:
+                options = `⚠  **${options}**`;
+
+            case EoRStatus.FAIL:
+                options = `❌ **${options}**`;
+
+            case EoRStatus.INFO:
+                options = `ℹ  **${options}**`;
+
+            default:
+                break;
+        }
+
+        response.content = options;
     } else {
-        result = {
+        response = {
             flags: MessageFlags.EPHEMERAL,
             ...options,
         };
     }
 
-    return ctx.editOrRespond(result);
+    return ctx.editOrRespond(response);
 }
 
 export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommand<ParsedArgsFinished> {
     guildIds = new BaseSet([Config.guildId]);
     global = false;
 
-    onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, error: any) {
+    onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
             prefix: ctx.command.name + " - Error",
-            message: error,
+            message: err,
         });
 
-        return ctx.editOrRespond({
-            content: Strings.bot.error.replace("?", String(error)),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
     }
 
-    onRunError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, error: any) {
+    onRunError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
             prefix: ctx.command.name + " - RunError",
-            message: error,
+            message: err,
         });
 
-        return ctx.editOrRespond({
-            content: Strings.bot.error.replace("?", String(error)),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
     }
 
     // TODO: Put own spin on this function, once I figure out when it triggers and what it actually does.
@@ -81,10 +110,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     }
 
     onDmBlocked(ctx: Interaction.InteractionContext) {
-        return ctx.editOrRespond({
-            content: Strings.commands.general.noDM,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, "This command can't be used in direct messages.", 2);
     }
 
     onRatelimit(ctx: Interaction.InteractionContext) {
@@ -93,10 +119,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: `${ctx.user.name}#${ctx.user.discriminator} has reached ratelimit of ${ctx.command.name}.`,
         });
 
-        return ctx.editOrRespond({
-            content: Strings.bot.ratelimitReached,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, "You've reached the ratelimit. Slow down.", 2);
     }
 
     onPermissionsFail(ctx: Interaction.InteractionContext) {
@@ -105,10 +128,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: `PermissionsFail - ${ctx.command.name} used by ${ctx.user.name}#${ctx.user.discriminator}}`,
         });
 
-        return ctx.editOrRespond({
-            content: Strings.commands.general.usageNotAllowed,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, "You're not allowed to use this command.", 2);
     }
 
     onSuccess(ctx: Interaction.InteractionContext) {

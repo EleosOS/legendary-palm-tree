@@ -3,7 +3,7 @@ import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib
 
 import { CustomRole } from "../../../../Entities";
 import { Config } from "../../../../config";
-import { Strings, Signale } from "../../..";
+import { Signale } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
@@ -48,7 +48,7 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 
     onCancelRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
-        return this.ephEoR(ctx, Strings.commands.roles.badHex.replace("?", args.hex));
+        return this.ephEoR(ctx, `${args.hex} is not a valid hex code.`, 2);
     }
 
     async run(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
@@ -66,7 +66,7 @@ class RoleCreateCommand extends BaseCommandOption {
             this.metadata.cachedRole = await guild.editRole(result.roleId, {
                 name: args.rolename,
                 color: Number("0x" + (args.hex as string).slice(1)),
-                reason: Strings.commands.roles.userChangedRole,
+                reason: "User changed role settings",
             });
 
             roleId = this.metadata.cachedRole.id;
