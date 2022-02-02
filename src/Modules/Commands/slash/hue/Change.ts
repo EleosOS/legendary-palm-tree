@@ -35,10 +35,7 @@ class HueChangeCommand extends BaseCommandOption {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return ctx.editOrRespond({
-            content: Strings.commands.hue.noIcon,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, Strings.commands.hue.noIcon);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {
@@ -48,10 +45,7 @@ class HueChangeCommand extends BaseCommandOption {
 
         await changeRecringeHue(args.amount);
 
-        return ctx.editOrRespond({
-            content: Strings.commands.hue.iconHueManuallyChanged.replace("?", args.amount.toString()),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, Strings.commands.hue.iconHueManuallyChanged.replace("?", args.amount.toString()));
     }
 }
 

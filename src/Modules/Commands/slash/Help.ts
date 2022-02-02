@@ -33,10 +33,7 @@ class HelpCommand extends BaseSlashCommand {
             description: embedDescription,
         });
 
-        return ctx.editOrRespond({
-            embed: embed,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, { embed });
     }
 }
 

@@ -39,10 +39,7 @@ class PurgeCommand extends BaseSlashCommand {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return ctx.editOrRespond({
-            content: Strings.commands.purge.failedInvalidArgs,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, Strings.commands.purge.failedInvalidArgs);
     }
 
     async run(ctx: Interaction.InteractionContext, args: PurgeArgs) {
@@ -63,11 +60,8 @@ class PurgeCommand extends BaseSlashCommand {
                     return k;
                 })
             )
-            .then(async () => {
-                return ctx.editOrRespond({
-                    content: Strings.commands.purge.deletedMessages.replace("?", args.amount.toString()),
-                    flags: MessageFlags.EPHEMERAL,
-                });
+            .then(() => {
+                this.ephEoR(ctx, Strings.commands.purge.deletedMessages.replace("?", args.amount.toString()));
             });
     }
 }

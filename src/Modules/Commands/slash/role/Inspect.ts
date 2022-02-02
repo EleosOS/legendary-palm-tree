@@ -42,15 +42,9 @@ class RoleInspectCommand extends BaseCommandOption {
         if (result) {
             const role = guild.roles.get(result.roleId)!;
 
-            return ctx.editOrRespond({
-                embed: createInfoEmbed(args.user, role),
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, { embed: createInfoEmbed(args.user, role) });
         } else {
-            return ctx.editOrRespond({
-                content: Strings.commands.roles.noRole,
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, Strings.commands.roles.noRole);
         }
     }
 }

@@ -4,6 +4,29 @@ import { Strings, Signale } from "../";
 import { Config } from "../../config";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
+/**
+ * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral.
+ * @param ctx
+ * @param options
+ * @returns Promise<unknown>
+ */
+function ephEoR(ctx: Interaction.InteractionContext, options: string | Structures.InteractionEditOrRespond) {
+    let result: Structures.InteractionEditOrRespond = {
+        flags: MessageFlags.EPHEMERAL,
+    };
+
+    if (typeof options === "string") {
+        result.content = options;
+    } else {
+        result = {
+            flags: MessageFlags.EPHEMERAL,
+            ...options,
+        };
+    }
+
+    return ctx.editOrRespond(result);
+}
+
 export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommand<ParsedArgsFinished> {
     guildIds = new BaseSet([Config.guildId]);
     global = false;
@@ -94,10 +117,13 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: `${ctx.command.name} used by ${ctx.user.name}#${ctx.user.discriminator}`,
         });
     }
+
+    ephEoR = ephEoR;
 }
 
 export class BaseCommandOption<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommandOption<ParsedArgsFinished> {
     type = ApplicationCommandOptionTypes.SUB_COMMAND;
+    ephEoR = ephEoR;
 }
 
 export class BaseCommandOptionGroup<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommandOption<ParsedArgsFinished> {

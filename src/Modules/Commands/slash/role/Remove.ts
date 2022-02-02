@@ -22,8 +22,7 @@ class RoleRemoveCommand extends BaseCommandOption {
     async run(ctx: Interaction.InteractionContext) {
         const guild = ctx.guilds.get(Config.guildId)!;
 
-        const result = await CustomRole.findOne({where: {userId: ctx.userId}});
-        //const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [ctx.userId]);
+        const result = await CustomRole.findOne({ where: { userId: ctx.userId } });
 
         if (result) {
             await guild.deleteRole(result.roleId, {
@@ -32,10 +31,7 @@ class RoleRemoveCommand extends BaseCommandOption {
 
             result.remove();
         } else {
-            return ctx.editOrRespond({
-                content: Strings.commands.roles.noRole,
-                flags: MessageFlags.EPHEMERAL,
-            });
+            return this.ephEoR(ctx, Strings.commands.roles.noRole);
         }
     }
 
@@ -47,13 +43,7 @@ class RoleRemoveCommand extends BaseCommandOption {
             message: `Removed role for ${ctx.user.name}#${ctx.user.discriminator}`,
         });
 
-        ctx.editOrRespond({
-            content: Strings.commands.roles.roleRemoved,
-            flags: MessageFlags.EPHEMERAL,
-        });
-
-        const webhooks = await guild.fetchWebhooks();
-        webhooks.get(Config.webhooks.customRoles)!.execute({
+        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
             avatarUrl: ctx.me!.avatarUrl,
             embed: {
                 title: "Removed custom role",
@@ -63,6 +53,8 @@ class RoleRemoveCommand extends BaseCommandOption {
                 },
             },
         });
+
+        return this.ephEoR(ctx, Strings.commands.roles.roleRemoved);
     }
 }
 

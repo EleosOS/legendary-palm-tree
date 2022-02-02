@@ -78,10 +78,7 @@ class HueOverwriteCommand extends BaseCommandOption {
             },
         });
 
-        return ctx.editOrRespond({
-            content: `✅  **Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore}).**`,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, `✅  **Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore}).**`);
     }
 }
 

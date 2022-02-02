@@ -1,6 +1,12 @@
 import { Structures } from "detritus-client";
 import { Embed } from "detritus-client/lib/utils";
 
+/**
+ * Returns the info embed used for custom roles
+ * @param user
+ * @param role
+ * @returns Embed
+ */
 export function createInfoEmbed(user: Structures.User | Structures.Member, role: Structures.Role) {
     return new Embed({
         author: {

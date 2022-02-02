@@ -48,10 +48,7 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 
     onCancelRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
-        return ctx.editOrRespond({
-            content: Strings.commands.roles.badHex.replace("?", args.hex),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, Strings.commands.roles.badHex.replace("?", args.hex));
     }
 
     async run(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
@@ -114,16 +111,12 @@ class RoleCreateCommand extends BaseCommandOption {
             message: `${verb} role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
         });
 
-        ctx.editOrRespond({
-            embed: embed,
-            flags: MessageFlags.EPHEMERAL,
-        });
-
-        const webhooks = await guild.fetchWebhooks();
-        webhooks.get(Config.webhooks.customRoles)!.execute({
+        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
             avatarUrl: ctx.me!.avatarUrl,
             embed: embed,
         });
+
+        return this.ephEoR(ctx, { embed });
     }
 }
 
