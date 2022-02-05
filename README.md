@@ -9,10 +9,8 @@ Private Discord bot made with [Detritus](https://github.com/detritusjs/client), 
 
 ## Self-Hosting
 
-Self-hosting is currently very much not recommended, but not impossible. This bot requires a higher node version (not sure which versions are supported exactly, but the latest LTS should work) and MySQL.
+This bot requires a higher node version (not sure which versions are supported exactly, but the latest LTS should work) and MySQL.
 
-A Discord application with bot account needs to be made, guides for that can be found online.
+A Discord application with bot account needs to be made, guides for that can be found online. The mysql server needs to have a user for the bot and a database set up, the bot should *theoretically* set up the tables itself.
 
-A MySQL server and database with tables needs to be set up manually, right now however there are no instructions whatsoever. A basic structure can be made up from the queries used in the code, if you're desperate. Proper instructions, an automatic set up of a database and perhaps even a Docker Image will be made in the future.
-
-If there is a database, you can fill out `config_example.ts`, download the dependencies with `npm install` and compile and run the code with `npm start`.
+Once that is given, you can fill out `config_example.ts`, download the dependencies with `npm install` and compile and run the code with `npm start`.
