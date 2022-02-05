@@ -94,7 +94,7 @@ class RoleCreateCommand extends BaseCommandOption {
         await guild.editRolePositions([
             {
                 id: roleId,
-                position: Math.floor(Math.random() * (guild.memberCount - 1)),
+                position: Math.floor(Math.random() * ((await CustomRole.count()) - 1)),
             },
         ]);
     }
