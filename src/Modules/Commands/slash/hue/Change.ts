@@ -1,17 +1,17 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { Strings, changeRecringeHue } from "../..";
-import { BaseSlashCommand } from "../Basecommand";
+import { changeServerIconHue } from "../../..";
+import { BaseCommandOption } from "../../Basecommand";
 
-interface HueCommandArgs {
+interface HueChangeCommandArgs {
     amount: number;
 }
 
-class HueCommand extends BaseSlashCommand {
+class HueChangeCommand extends BaseCommandOption {
     constructor() {
         super({
-            name: "hue",
+            name: "change",
             description: "[ADMIN] Changes the hue of the server picture by the specified amount",
             permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
@@ -35,24 +35,18 @@ class HueCommand extends BaseSlashCommand {
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return ctx.editOrRespond({
-            content: Strings.commands.hue.noIcon,
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
     }
 
-    async run(ctx: Interaction.InteractionContext, args: HueCommandArgs) {
+    async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {
         if (args.amount === 0) {
             args.amount = 10;
         }
 
-        await changeRecringeHue(args.amount);
+        await changeServerIconHue(args.amount);
 
-        return ctx.editOrRespond({
-            content: Strings.commands.hue.iconHueManuallyChanged.replace("?", args.amount.toString()),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, `The server icon hue has been manually changed by ${args.amount}°`, 1);
     }
 }
 
-export default HueCommand;
+export default HueChangeCommand;

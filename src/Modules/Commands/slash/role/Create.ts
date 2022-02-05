@@ -1,9 +1,9 @@
 import { Interaction, Structures } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib/constants";
-import { RowDataPacket } from "mysql2";
 
+import { CustomRole } from "../../../../Entities";
 import { Config } from "../../../../config";
-import { Strings, Signale, DB } from "../../..";
+import { Signale } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
@@ -48,10 +48,7 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 
     onCancelRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
-        return ctx.editOrRespond({
-            content: Strings.commands.roles.badHex.replace("?", args.hex),
-            flags: MessageFlags.EPHEMERAL,
-        });
+        return this.ephEoR(ctx, `${args.hex} is not a valid hex code.`, 2);
     }
 
     async run(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
@@ -60,20 +57,23 @@ class RoleCreateCommand extends BaseCommandOption {
         const guild = ctx.guilds.get(Config.guildId)!;
         let roleId: string;
 
-        const result = await DB.query("SELECT roleId FROM customRoles WHERE userId = ?", [ctx.userId]);
+        // Find existing custom role entry
+        let result = await CustomRole.findOne({ where: { userId: ctx.userId } });
 
-        // result was exists (was successful) AND result contains something AND the roleId of the result is not empty
-        if (result && (result[0] as RowDataPacket[]).length > 0 && ((result[0] as any)[0].roleId as string).length > 0) {
-            roleId = (result[0] as any)[0].roleId;
+        if (result) {
+            // Entry exists, just edit role
 
-            this.metadata.cachedRole = await guild.editRole(roleId, {
+            this.metadata.cachedRole = await guild.editRole(result.roleId, {
                 name: args.rolename,
                 color: Number("0x" + (args.hex as string).slice(1)),
-                reason: Strings.commands.roles.userChangedRole,
+                reason: "User changed role settings",
             });
+
+            roleId = this.metadata.cachedRole.id;
 
             ctx.command!.metadata.edited = true;
         } else {
+            // No entry exists => No custom role exists => Create new role
             this.metadata.cachedRole = await guild.createRole({
                 name: args.rolename,
                 color: Number("0x" + (args.hex as string).slice(1)),
@@ -81,15 +81,20 @@ class RoleCreateCommand extends BaseCommandOption {
 
             roleId = this.metadata.cachedRole.id;
 
-            await DB.query("INSERT INTO customRoles(userId, roleId) VALUES (?, ?)", [ctx.userId, this.metadata.cachedRole.id]);
+            // Save in DB
+            result = new CustomRole();
+            result.userId = ctx.userId;
+            result.roleId = roleId;
+            result.save();
 
             await guild.addMemberRole(ctx.userId, roleId);
         }
 
+        // Random role position
         await guild.editRolePositions([
             {
                 id: roleId,
-                position: Math.floor(Math.random() * (guild.memberCount - 1)),
+                position: Math.floor(Math.random() * ((await CustomRole.count()) - 1)),
             },
         ]);
     }
@@ -106,16 +111,12 @@ class RoleCreateCommand extends BaseCommandOption {
             message: `${verb} role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
         });
 
-        ctx.editOrRespond({
-            embed: embed,
-            flags: MessageFlags.EPHEMERAL,
-        });
-
-        const webhooks = await guild.fetchWebhooks();
-        webhooks.get(Config.webhooks.customRoles)!.execute({
+        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
             avatarUrl: ctx.me!.avatarUrl,
             embed: embed,
         });
+
+        return this.ephEoR(ctx, { embed });
     }
 }
 
