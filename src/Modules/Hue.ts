@@ -51,7 +51,7 @@ export async function changeServerIconHue(amount: number) {
 
         Signale.warn({
             prefix: "hue",
-            message: `No hue existed in the DB. A new hue for the server was saved as 10 (id: ${result.id}), you can edit this with the command /hue override.`,
+            message: `No hue existed in the DB. A new hue for the server was saved as 10 (id: ${result.id}), you can edit this with the command /hue overwrite.`,
         });
     }
 

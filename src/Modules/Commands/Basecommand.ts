@@ -68,8 +68,8 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
 
     onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
-            prefix: ctx.command.name + " - Error",
-            message: err,
+            prefix: ctx.command.name,
+            err,
         });
 
         return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
@@ -77,8 +77,8 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
 
     onRunError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
-            prefix: ctx.command.name + " - RunError",
-            message: err,
+            prefix: ctx.command.name,
+            err,
         });
 
         return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
