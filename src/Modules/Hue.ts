@@ -86,3 +86,24 @@ export async function changeServerIconHue(amount: number) {
 
     return true;
 }
+
+export function scheduleHueChange() {
+    Signale.note({
+        prefix: "hue",
+        message: `Scheduling hue change`,
+    });
+
+    let hueTrigger = new Date();
+    const now = new Date();
+
+    hueTrigger.setDate(now.getDate() + 1);
+    hueTrigger.setHours(0);
+    hueTrigger.setMinutes(0);
+    hueTrigger.setSeconds(0);
+    hueTrigger.setMilliseconds(0);
+
+    setTimeout(() => {
+        void changeServerIconHue(10);
+        setInterval(() => void changeServerIconHue(10), 86400000);
+    }, hueTrigger.getTime() - now.getTime());
+}

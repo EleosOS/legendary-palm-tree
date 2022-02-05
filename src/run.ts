@@ -4,7 +4,7 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, changeServerIconHue } from "./Modules";
+import { InteractionBot, Signale, scheduleHueChange } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
@@ -58,18 +58,5 @@ void (async () => {
         throw new Error();
     }
 
-    // Schedule hue change
-    const hueTrigger = new Date();
-    const now = new Date();
-
-    hueTrigger.setDate(now.getDate() + 1);
-    hueTrigger.setHours(0);
-    hueTrigger.setMinutes(0);
-    hueTrigger.setSeconds(0);
-    hueTrigger.setMilliseconds(0);
-
-    setTimeout(() => {
-        void changeServerIconHue(10);
-        setInterval(() => void changeServerIconHue(10), 86400000);
-    }, hueTrigger.getTime() - now.getTime());
+    scheduleHueChange();
 })();
