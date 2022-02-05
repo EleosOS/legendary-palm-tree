@@ -69,19 +69,19 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
             prefix: ctx.command.name,
-            err,
+            message: err,
         });
 
-        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
+        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 0);
     }
 
     onRunError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
             prefix: ctx.command.name,
-            err,
+            message: err,
         });
 
-        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 3);
+        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 0);
     }
 
     // TODO: Put own spin on this function, once I figure out when it triggers and what it actually does.
