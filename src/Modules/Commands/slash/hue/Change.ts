@@ -1,7 +1,7 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { changeRecringeHue } from "../../..";
+import { changeServerIconHue } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 
 interface HueChangeCommandArgs {
@@ -43,7 +43,7 @@ class HueChangeCommand extends BaseCommandOption {
             args.amount = 10;
         }
 
-        await changeRecringeHue(args.amount);
+        await changeServerIconHue(args.amount);
 
         return this.ephEoR(ctx, `The server icon hue has been manually changed by ${args.amount}°`, 1);
     }

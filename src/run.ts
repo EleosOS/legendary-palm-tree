@@ -4,10 +4,8 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, changeRecringeHue } from "./Modules/Bot";
+import { InteractionBot, Signale, changeServerIconHue } from "./Modules";
 import Commands from "./Modules/Commands";
-import { Signale } from "./Modules/Signale";
-import { ClusterClient } from "detritus-client";
 
 void (async () => {
     await createConnection({
@@ -71,7 +69,7 @@ void (async () => {
     hueTrigger.setMilliseconds(0);
 
     setTimeout(() => {
-        void changeRecringeHue(10);
-        setInterval(() => void changeRecringeHue(10), 86400000);
+        void changeServerIconHue(10);
+        setInterval(() => void changeServerIconHue(10), 86400000);
     }, hueTrigger.getTime() - now.getTime());
 })();
