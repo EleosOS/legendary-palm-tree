@@ -14,9 +14,9 @@ enum EoRStatus {
 
 /**
  * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral and edits strings into the normal form.
- * @param {Interaction.InteractionContext} ctx
- * @param {string | Structures.InteractionEditOrRespond} options
- * @param {EoRStatus} status What icon to add to the content
+ * @param ctx
+ * @param options
+ * @param status What icon to add to the content
  * @returns Promise<unknown>
  */
 function ephEoR(ctx: Interaction.InteractionContext, options: string | Structures.InteractionEditOrRespond, status?: EoRStatus) {
@@ -65,7 +65,6 @@ function ephEoR(ctx: Interaction.InteractionContext, options: string | Structure
 export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommand<ParsedArgsFinished> {
     guildIds = new BaseSet([Config.guildId]);
     global = false;
-    enabled = true;
 
     onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
@@ -108,17 +107,6 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             embed,
             flags: MessageFlags.CROSSPOSTED,
         });
-    }
-
-    onBefore(/*ctx: Interaction.InteractionContext*/) {
-        return this.enabled;
-        // This function will probably be expanded in the future, to make the definiton worth it. Probably.
-    }
-
-    onCancel(ctx: Interaction.InteractionContext) {
-        if (!this.enabled) {
-            return this.ephEoR(ctx, "This command has been disabled by the host.", 2);
-        }
     }
 
     onDmBlocked(ctx: Interaction.InteractionContext) {
