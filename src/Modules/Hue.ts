@@ -1,6 +1,7 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import { InteractionBot, Signale, Config, Hue } from ".";
+import cron from "node-cron";
+import { InteractionBot, Signale, Config, Hue } from "./";
 
 export async function changeServerIconHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
@@ -88,16 +89,9 @@ export function scheduleHueChange() {
     let hueTrigger = new Date();
     const now = new Date();
 
-    hueTrigger.setDate(now.getDate() + 1);
-    hueTrigger.setHours(0);
-    hueTrigger.setMinutes(0);
-    hueTrigger.setSeconds(0);
-    hueTrigger.setMilliseconds(0);
-
-    setTimeout(() => {
-        void changeServerIconHue(10);
-        setInterval(() => void changeServerIconHue(10), 86400000);
-    }, hueTrigger.getTime() - now.getTime());
+    cron.schedule("0 0 * * *", () => {
+        changeServerIconHue(10);
+    });
 
     Signale.info({
         prefix: "hue",

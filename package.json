@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/node": "^17.0.10",
+    "@types/node-cron": "^3.0.1",
     "@types/signale": "^1.4.4",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
     "@typescript-eslint/parser": "^5.10.0",
