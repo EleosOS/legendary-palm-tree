@@ -1,6 +1,6 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import cron from "node-cron";
+import cron, { ScheduledTask } from "node-cron";
 import { InteractionBot, Signale, Config, Hue } from "./";
 
 export async function changeServerIconHue(amount: number) {
@@ -85,11 +85,22 @@ export async function changeServerIconHue(amount: number) {
     return true;
 }
 
-export function scheduleHueChange() {
-    let hueTrigger = new Date();
-    const now = new Date();
+export function scheduleHueChange(cronExpression: string) {
+    if (!cron.validate(cronExpression)) {
+        return Signale.fatal({
+            prefix: "hue",
+            message: "scheduleHueChange was called with an invalid cron expression, no hue change has been (re-)scheduled.",
+        });
+    }
 
-    cron.schedule("0 0 * * *", () => {
+    const tasks = cron.getTasks();
+
+    if (tasks[0]) {
+        tasks[0].stop();
+        delete tasks[0];
+    }
+
+    cron.schedule(cronExpression, () => {
         changeServerIconHue(10);
     });
 

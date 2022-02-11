@@ -58,5 +58,5 @@ void (async () => {
         throw new Error();
     }
 
-    scheduleHueChange();
+    scheduleHueChange("0 0 * * *");
 })();

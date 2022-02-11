@@ -1,4 +1,4 @@
-/*import { Interaction } from "detritus-client";
+import { Interaction } from "detritus-client";
 import { Embed } from "detritus-client/lib/utils";
 
 import { BaseSlashCommand } from "../";
@@ -37,4 +37,3 @@ class HelpCommand extends BaseSlashCommand {
 }
 
 export default HelpCommand;
-*/
