@@ -16,6 +16,7 @@
     "detritus-client": "^0.16.4-beta.6",
     "jimp": "^0.16.1",
     "mysql2": "^2.3.3",
+    "node-cron": "^3.0.0",
     "reflect-metadata": "^0.1.13",
     "signale": "^1.4.0",
     "typeorm": "^0.2.41",

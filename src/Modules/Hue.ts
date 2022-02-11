@@ -1,8 +1,6 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import { InteractionBot, Signale } from ".";
-import { Config } from "../config";
-import { Hue } from "../Entities";
+import { InteractionBot, Signale, Config, Hue } from ".";
 
 export async function changeServerIconHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
@@ -25,7 +23,7 @@ export async function changeServerIconHue(amount: number) {
         result.currentHue += amount;
 
         // I'm not even going to pretend I know how this line works, all I know is it normalizes the hue degree.
-        result.currentHue = (result.currentHue % 360 + 360) % 360;
+        result.currentHue = ((result.currentHue % 360) + 360) % 360;
 
         try {
             await result.save();

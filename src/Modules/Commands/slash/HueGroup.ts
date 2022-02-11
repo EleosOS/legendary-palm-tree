@@ -1,6 +1,6 @@
 import { Permissions } from "detritus-client/lib/constants";
 
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 import HueChangeCommand from "./hue/Change";
 import HueOverwriteCommand from "./hue/Overwrite";
 

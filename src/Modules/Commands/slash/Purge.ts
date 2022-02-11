@@ -1,9 +1,9 @@
 import { Interaction } from "detritus-client";
 import { BaseCollection } from "detritus-client/lib/collections";
-import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 import { Message } from "detritus-client/lib/structures";
 
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 
 interface PurgeArgs {
     amount: number;

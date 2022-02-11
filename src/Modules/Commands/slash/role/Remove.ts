@@ -1,10 +1,7 @@
 import { Interaction } from "detritus-client";
-import { MessageFlags } from "detritus-client/lib/constants";
 
-import { CustomRole } from "../../../../Entities";
-import { Config } from "../../../../config";
-import { Signale } from "../../..";
-import { BaseCommandOption } from "../../Basecommand";
+import { Signale, Config, CustomRole } from "../../..";
+import { BaseCommandOption } from "../../";
 
 class RoleRemoveCommand extends BaseCommandOption {
     constructor() {

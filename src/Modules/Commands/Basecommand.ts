@@ -1,7 +1,6 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
-import { Signale } from "../";
-import { Config } from "../../config";
+import { Signale, Config } from "../";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
 enum EoRStatus {

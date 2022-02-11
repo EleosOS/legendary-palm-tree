@@ -1,6 +1,6 @@
 import { InteractionCommandClient } from "detritus-client";
 
-import { Config } from "../config";
+import { Config } from ".";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {

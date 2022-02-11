@@ -1,4 +1,4 @@
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 
 import RoleCreateCommand from "./role/Create";
 import RoleInfoCommand from "./role/Inspect";

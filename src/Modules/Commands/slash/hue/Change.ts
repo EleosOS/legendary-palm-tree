@@ -1,8 +1,8 @@
 import { Interaction } from "detritus-client";
-import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 
 import { changeServerIconHue } from "../../..";
-import { BaseCommandOption } from "../../Basecommand";
+import { BaseCommandOption } from "../../";
 
 interface HueChangeCommandArgs {
     amount: number;

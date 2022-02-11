@@ -1,9 +1,7 @@
-import { Interaction, Structures } from "detritus-client";
-import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib/constants";
+import { Interaction } from "detritus-client";
+import { ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
 
-import { CustomRole } from "../../../../Entities";
-import { Config } from "../../../../config";
-import { Signale } from "../../..";
+import { Signale, Config, CustomRole } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 

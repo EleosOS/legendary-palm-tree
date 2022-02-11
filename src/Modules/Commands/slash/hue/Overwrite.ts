@@ -1,9 +1,8 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { Hue } from "../../../../Entities";
-import { BaseCommandOption } from "../../Basecommand";
-import { Config } from "../../../../config";
+import { Config, Hue } from "../../../";
+import { BaseCommandOption } from "../../";
 
 interface HueOverwriteCommandArgs {
     amount: number;

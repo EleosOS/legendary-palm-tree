@@ -1,8 +1,7 @@
-import { Interaction } from "detritus-client";
-import { MessageFlags } from "detritus-client/lib/constants";
+/*import { Interaction } from "detritus-client";
 import { Embed } from "detritus-client/lib/utils";
 
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 
 const embedDescription = `
 os is a bot developed by <@249880389160665089> for Recringe. It's main purpose (at the moment) is to allow you to create your own custom role. To get started, take a look at \`/role create\`.
@@ -38,3 +37,4 @@ class HelpCommand extends BaseSlashCommand {
 }
 
 export default HelpCommand;
+*/

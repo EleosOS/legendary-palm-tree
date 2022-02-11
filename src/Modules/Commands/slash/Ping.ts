@@ -1,7 +1,6 @@
 import { Interaction } from "detritus-client";
-import { MessageFlags } from "detritus-client/lib/constants";
 
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 
 class PingCommand extends BaseSlashCommand {
     constructor() {
