@@ -24,9 +24,8 @@ export async function changeServerIconHue(amount: number) {
     if (result) {
         result.currentHue += amount;
 
-        if (result.currentHue >= 360) {
-            result.currentHue -= 360;
-        }
+        // I'm not even going to pretend I know how this line works, all I know is it normalizes the hue degree.
+        result.currentHue = (result.currentHue % 360 + 360) % 360;
 
         try {
             await result.save();
