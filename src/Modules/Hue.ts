@@ -1,6 +1,6 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import cron, { ScheduledTask } from "node-cron";
+import cron from "node-cron";
 import { InteractionBot, Signale, Config, Hue } from "./";
 
 export async function changeServerIconHue(amount: number) {
