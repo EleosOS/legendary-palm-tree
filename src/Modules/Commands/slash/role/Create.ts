@@ -1,7 +1,7 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
 
-import { Signale, Config, CustomRole } from "../../..";
+import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
@@ -98,7 +98,6 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 
     async onSuccess(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
-        const guild = ctx.guilds.get("649352572464922634")!;
         const verb = ctx.command.metadata.edited ? "Edited" : "Created";
 
         const embed = createInfoEmbed(ctx.user, this.metadata.cachedRole);
@@ -109,7 +108,7 @@ class RoleCreateCommand extends BaseCommandOption {
             message: `${verb} role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
         });
 
-        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
+        Webhooks.execute(Webhooks.ids.customRoles, {
             avatarUrl: ctx.me!.avatarUrl,
             embed: embed,
         });

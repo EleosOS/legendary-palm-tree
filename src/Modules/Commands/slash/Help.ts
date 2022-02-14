@@ -4,7 +4,7 @@ import { Embed } from "detritus-client/lib/utils";
 import { BaseSlashCommand } from "../";
 
 const embedDescription = `
-os is a bot developed by <@249880389160665089> for Recringe. It's main purpose (at the moment) is to allow you to create your own custom role. To get started, take a look at \`/role create\`.
+This bot was developed by <@249880389160665089> for small, private servers. It's main purpose (at the moment) is to allow you to create your own custom role. To get started, take a look at \`/role create\`.
 \n**Changes in version 1.1:**
 \nAll important info on commands has been moved into the slash command UI.
 \nAll commands have been reworked into slash commands, that means the prefix \`os\` has also been retired. Slash commands are available in every channel, even if the bot can't see it.
@@ -25,10 +25,10 @@ class HelpCommand extends BaseSlashCommand {
         const embed = new Embed({
             author: {
                 icon_url: ctx.me!.avatarUrl,
-                name: "os",
+                name: ctx.me!.username,
             },
             color: Number("0xffffff"),
-            title: "About os",
+            title: "About " + ctx.me!.username,
             description: embedDescription,
         });
 

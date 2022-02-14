@@ -2,6 +2,7 @@ import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
 import cron from "node-cron";
 import { InteractionBot, Signale, Config, Hue } from "./";
+import { Webhooks } from "./Webhooks";
 
 export async function changeServerIconHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
@@ -63,12 +64,12 @@ export async function changeServerIconHue(amount: number) {
     });
 
     // Notify
-    (await guild.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
+    Webhooks.execute(Webhooks.ids.serverImgHue, {
         avatarUrl: client.user!.avatarUrl,
         embed: {
             title: `Hue has been changed. (${result.currentHue})`,
             author: {
-                name: "os",
+                name: client.user!.username,
                 iconUrl: client.user!.avatarUrl,
             },
             image: {

@@ -1,7 +1,7 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
 
-import { Config, Hue } from "../../../";
+import { Hue, Webhooks } from "../../../";
 import { BaseCommandOption } from "../../";
 
 interface HueOverwriteCommandArgs {
@@ -56,12 +56,12 @@ class HueOverwriteCommand extends BaseCommandOption {
         await hue.save();
 
         // Notify
-        (await ctx.guild!.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
+        Webhooks.execute(Webhooks.ids.serverImgHue, {
             avatarUrl: ctx.me!.avatarUrl,
             embed: {
                 title: `Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore})`,
                 author: {
-                    name: "os",
+                    name: ctx.me!.username,
                     iconUrl: ctx.me!.avatarUrl,
                 },
             },

@@ -24,3 +24,8 @@ InteractionBot.client.on("guildMemberRemove", async (gmr) => {
         },
     });
 });
+
+export function getGuild() {
+    const client = (InteractionBot.client as ClusterClient).shards.first()!;
+    return client.guilds.get(Config.guildId)!;
+}

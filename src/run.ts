@@ -4,7 +4,7 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, scheduleHueChange } from "./Modules";
+import { InteractionBot, Signale, scheduleHueChange, Webhooks } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
@@ -21,14 +21,16 @@ void (async () => {
     InteractionBot.addMultiple(Commands);
 
     InteractionBot.commands.forEach((command) => {
-        Signale.info({
+        Signale.start({
             prefix: "startup",
             message: "InteractionCommand found:",
             suffix: command.name,
         });
     });
 
-    await InteractionBot.run();
+    await InteractionBot.run({
+        wait: true,
+    });
 
     // Clean up guild slash commands
     //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
@@ -57,6 +59,8 @@ void (async () => {
 
         throw new Error();
     }
+
+    Webhooks.checkWebhooks();
 
     scheduleHueChange("0 0 * * *");
 })();
