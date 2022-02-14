@@ -3,6 +3,7 @@ import { BaseSet } from "detritus-client/lib/collections";
 import { FailedPermissions } from "detritus-client/lib/command";
 import { Permissions } from "detritus-client/lib/constants";
 import { Signale, Config } from "../";
+import { Webhooks } from "../Webhooks";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
 enum EoRStatus {
@@ -127,7 +128,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     }
 
     onPermissionsFailClient(ctx: Interaction.InteractionContext, failedPermArray: FailedPermissions) {
-        let failedPermString = "`";
+        let failedPermString = "The bot is missing the following permissions to execute this command: `";
         let key: keyof typeof Permissions;
 
         for (key in Permissions) {
@@ -141,13 +142,37 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
         failedPermString = failedPermString.slice(0, failedPermString.length - 1);
         failedPermString += "`";
 
-        return this.ephEoR(ctx, "The bot is missing the following permissions to execute this command: " + failedPermString, 3);
+        Webhooks.execute(Webhooks.ids.commandUse, {
+            avatarUrl: ctx.me!.avatarUrl,
+            embed: {
+                title: `Command Used: ${this.fullName} (PermissionsFailClient)`,
+                description: failedPermString,
+                color: 0xfa5a5a,
+                author: {
+                    name: `${ctx.user.username}#${ctx.user.discriminator}`,
+                    iconUrl: ctx.user.avatarUrl,
+                },
+            },
+        });
+
+        return this.ephEoR(ctx, failedPermString, 3);
     }
 
     onPermissionsFail(ctx: Interaction.InteractionContext) {
         Signale.note({
             prefix: "command",
             message: `PermissionsFail - ${ctx.command.name} used by ${ctx.user.name}#${ctx.user.discriminator}}`,
+        });
+
+        Webhooks.execute(Webhooks.ids.commandUse, {
+            avatarUrl: ctx.me!.avatarUrl,
+            embed: {
+                title: `Command Used: ${this.fullName} (PermissionsFail)`,
+                author: {
+                    name: `${ctx.user.username}#${ctx.user.discriminator}`,
+                    iconUrl: ctx.user.avatarUrl,
+                },
+            },
         });
 
         return this.ephEoR(ctx, "You're not allowed to use this command.", 2);
@@ -157,6 +182,17 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
         Signale.info({
             prefix: "command",
             message: `${this.fullName} used by ${ctx.user.name}#${ctx.user.discriminator}`,
+        });
+
+        Webhooks.execute(Webhooks.ids.commandUse, {
+            avatarUrl: ctx.me!.avatarUrl,
+            embed: {
+                title: `Command Used: ${this.fullName}`,
+                author: {
+                    name: `${ctx.user.username}#${ctx.user.discriminator}`,
+                    iconUrl: ctx.user.avatarUrl,
+                },
+            },
         });
     }
 

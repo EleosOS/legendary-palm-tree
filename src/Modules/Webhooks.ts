@@ -5,6 +5,7 @@ import { Config, InteractionBot, getGuild, Signale } from ".";
 interface WebhookIds {
     serverImgHue: string;
     customRoles: string;
+    commandUse: string;
     guildMemberRemove: string;
     [key: string]: string;
 }
@@ -15,6 +16,7 @@ class WebhooksClass {
     constructor() {
         this.ids = {
             serverImgHue: Config.webhooks.serverImgHue,
+            commandUse: Config.webhooks.commandUse,
             customRoles: Config.webhooks.customRoles,
             guildMemberRemove: Config.webhooks.guildMemberRemove,
         };
