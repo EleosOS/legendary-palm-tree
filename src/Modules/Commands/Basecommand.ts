@@ -133,7 +133,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     onSuccess(ctx: Interaction.InteractionContext) {
         Signale.info({
             prefix: "command",
-            message: `${ctx.command.fullName} used by ${ctx.user.name}#${ctx.user.discriminator}`,
+            message: `${this.fullName} used by ${ctx.user.name}#${ctx.user.discriminator}`,
         });
     }
 
