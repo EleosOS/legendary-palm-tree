@@ -13,15 +13,13 @@ InteractionBot.client.on("guildMemberRemove", async (gmr) => {
     const guild = client.guilds.get(Config.guildId)!;
 
     (await guild.fetchWebhooks()).get(Config.webhooks.guildMemberRemove)!.execute({
+        username: client.user!.username,
         avatarUrl: client.user!.avatarUrl,
         embed: {
-            title: `${gmr.user.username}#${gmr.user.discriminator} has left the server.`,
+            title: "User has left the server.",
             author: {
-                name: client.user!.name,
-                iconUrl: client.user!.avatarUrl,
-            },
-            thumbnail: {
-                url: gmr.user.avatarUrl,
+                name: `${gmr.user.username}#${gmr.user.discriminator}`,
+                iconUrl: gmr.user.avatarUrl,
             },
         },
     });
