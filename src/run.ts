@@ -4,7 +4,7 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, scheduleHueChange, Webhooks } from "./Modules";
+import { InteractionBot, Signale, scheduleHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
@@ -55,6 +55,8 @@ void (async () => {
         }
 
         Webhooks.checkWebhooks();
+
+        checkIfGuildIconIsGif(true);
 
         // Clean up guild slash commands
         //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);

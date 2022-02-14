@@ -1,7 +1,7 @@
 import { Interaction } from "detritus-client";
 import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 
-import { changeServerIconHue } from "../../..";
+import { changeServerIconHue, checkIfGuildIconIsGif } from "../../..";
 import { BaseCommandOption } from "../../";
 
 interface HueChangeCommandArgs {
@@ -31,11 +31,11 @@ class HueChangeCommand extends BaseCommandOption {
     }
 
     async onBeforeRun(ctx: Interaction.InteractionContext) {
-        return ctx.guild!.iconUrl !== null;
+        return ctx.guild!.iconUrl !== null || !checkIfGuildIconIsGif(false);
     }
 
     async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
+        return this.ephEoR(ctx, "This server either doesn't have an icon or an animated server icon, animated server icons are not supported.", 3);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {

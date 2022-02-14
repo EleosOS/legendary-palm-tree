@@ -1,7 +1,7 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
 import cron from "node-cron";
-import { InteractionBot, Signale, Config, Hue } from "./";
+import { InteractionBot, Signale, Config, Hue, checkIfGuildIconIsGif } from "./";
 import { Webhooks } from "./Webhooks";
 
 export async function changeServerIconHue(amount: number) {
@@ -9,10 +9,10 @@ export async function changeServerIconHue(amount: number) {
     const guild = client.guilds.get(Config.guildId)!;
 
     // Check for guild image
-    if (guild.iconUrl === null) {
+    if (guild.iconUrl === null || checkIfGuildIconIsGif(false)) {
         Signale.warn({
             prefix: "hue",
-            message: "Guild does not have an icon to change the hue of.",
+            message: "The server does not have an icon to change the hue of, or an animated icon.",
         });
 
         return false;
