@@ -1,5 +1,5 @@
 import { Interaction } from "detritus-client";
-import { ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 
 import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
@@ -24,6 +24,7 @@ class RoleCreateCommand extends BaseCommandOption {
                 limit: 1,
                 type: "user",
             },
+            permissionsClient: [Permissions.MANAGE_ROLES],
             options: [
                 {
                     name: "hex",

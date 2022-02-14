@@ -1,4 +1,5 @@
 import { Interaction } from "detritus-client";
+import { Permissions } from "detritus-client/lib/constants";
 
 import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../";
@@ -8,6 +9,7 @@ class RoleRemoveCommand extends BaseCommandOption {
         super({
             name: "remove",
             description: "Removes a custom role.",
+            permissionsClient: [Permissions.MANAGE_ROLES],
             ratelimit: {
                 duration: 5000,
                 limit: 1,

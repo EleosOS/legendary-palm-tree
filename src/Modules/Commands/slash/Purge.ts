@@ -16,6 +16,7 @@ class PurgeCommand extends BaseSlashCommand {
             description: "[ADMIN] Deletes 2-100 messages in a channel.",
             disableDm: true,
             permissions: [Permissions.ADMINISTRATOR],
+            permissionsClient: [Permissions.MANAGE_MESSAGES],
             ratelimit: {
                 duration: 3000,
                 limit: 1,

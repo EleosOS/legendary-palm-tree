@@ -22,17 +22,30 @@ class WebhooksClass {
 
     async checkWebhooks() {
         const guild = getGuild();
-        const webhooks = await guild.fetchWebhooks();
 
-        for (const key in this.ids) {
-            const id = this.ids[key];
+        if (guild.me!.canManageWebhooks) {
+            const webhooks = await guild.fetchWebhooks();
 
-            if (!webhooks.has(id)) {
-                Signale.warn({
-                    prefix: "webhooks",
-                    message: `WebhookId ${id} was not found in guild.`,
-                });
+            for (const key in this.ids) {
+                const id = this.ids[key];
+
+                if (!webhooks.has(id)) {
+                    Signale.warn({
+                        prefix: "webhooks",
+                        message: `WebhookId ${id} was not found in guild.`,
+                    });
+                } else {
+                    Signale.start({
+                        prefix: "webhooks",
+                        message: `${key} Webhook found: ${id}`,
+                    });
+                }
             }
+        } else {
+            Signale.warn({
+                prefix: "webhooks",
+                message: "The bot does not have permission to manage webhooks, it will not be able to use them!",
+            });
         }
     }
 

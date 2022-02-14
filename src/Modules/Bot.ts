@@ -1,4 +1,5 @@
-import { ClusterClient, InteractionCommandClient } from "detritus-client";
+import { ClusterClient, InteractionCommandClient, ShardClient, Utils } from "detritus-client";
+import { promisify } from "util";
 
 import { Config } from "./";
 

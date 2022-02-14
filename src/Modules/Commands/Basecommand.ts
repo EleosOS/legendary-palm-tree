@@ -1,5 +1,7 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
+import { FailedPermissions } from "detritus-client/lib/command";
+import { Permissions } from "detritus-client/lib/constants";
 import { Signale, Config } from "../";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
@@ -39,12 +41,15 @@ function ephEoR(ctx: Interaction.InteractionContext, options: string | Structure
 
             case EoRStatus.WARNING:
                 options = `⚠  **${options}**`;
+                break;
 
             case EoRStatus.FAIL:
                 options = `❌ **${options}**`;
+                break;
 
             case EoRStatus.INFO:
                 options = `ℹ  **${options}**`;
+                break;
 
             default:
                 break;
@@ -119,6 +124,24 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
         });
 
         return this.ephEoR(ctx, "You've reached the ratelimit. Slow down.", 2);
+    }
+
+    onPermissionsFailClient(ctx: Interaction.InteractionContext, failedPermArray: FailedPermissions) {
+        let failedPermString = "`";
+        let key: keyof typeof Permissions;
+
+        for (key in Permissions) {
+            const value = Permissions[key];
+
+            if (failedPermArray.includes(value)) {
+                failedPermString += key + " ";
+            }
+        }
+
+        failedPermString = failedPermString.slice(0, failedPermString.length - 1);
+        failedPermString += "`";
+
+        return this.ephEoR(ctx, "The bot is missing the following permissions to execute this command: " + failedPermString, 3);
     }
 
     onPermissionsFail(ctx: Interaction.InteractionContext) {

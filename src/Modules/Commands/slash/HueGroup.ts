@@ -10,6 +10,7 @@ class HueGroupCommand extends BaseSlashCommand {
             name: "hue",
             description: "[ADMIN] Commands to manage the hue changing of the server icon",
             permissions: [Permissions.ADMINISTRATOR],
+            permissionsClient: [Permissions.MANAGE_GUILD],
             options: [new HueChangeCommand(), new HueOverwriteCommand()],
         });
     }

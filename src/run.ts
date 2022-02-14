@@ -28,39 +28,45 @@ void (async () => {
         });
     });
 
-    await InteractionBot.run({
-        wait: true,
+    InteractionBot.client.once("ready", async () => {
+        Signale.start({ prefix: "startup", message: "Bot ready" });
+
+        scheduleHueChange("0 0 * * *");
     });
 
-    // Clean up guild slash commands
-    //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
+    InteractionBot.client.once("gatewayReady", async () => {
+        Signale.start({ prefix: "startup", message: "Gateway ready" });
 
-    // Clean up global slash commands
-    //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+        // Check for guild
+        try {
+            await InteractionBot.rest.fetchGuild(Config.guildId);
+        } catch (err) {
+            Signale.fatal({
+                prefix: "startup",
+                message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
+            });
 
-    // Force the upload of known slash commands
-    //await InteractionBot.checkAndUploadCommands(true);
+            Signale.fatal({
+                prefix: "startup",
+                message: "Exiting...",
+            });
 
-    Signale.start({ prefix: "startup", message: "Bot ready" });
+            throw new Error();
+        }
 
-    // Check for guild
-    try {
-        await InteractionBot.rest.fetchGuild(Config.guildId);
-    } catch (err) {
-        Signale.fatal({
-            prefix: "startup",
-            message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
-        });
+        Webhooks.checkWebhooks();
 
-        Signale.fatal({
-            prefix: "startup",
-            message: "Exiting...",
-        });
+        // Clean up guild slash commands
+        //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
 
-        throw new Error();
-    }
+        // Clean up global slash commands
+        //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
 
-    Webhooks.checkWebhooks();
+        // Force the upload of known slash commands
+        //await InteractionBot.checkAndUploadCommands(true);
+    });
 
-    scheduleHueChange("0 0 * * *");
+    InteractionBot.run({
+        wait: true,
+    });
 })();
