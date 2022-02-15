@@ -1,3 +1,5 @@
+export * from "./Basecommand";
+
 import HelpCommand from "./slash/Help";
 import HueGroupCommand from "./slash/HueGroup";
 import PingCommand from "./slash/Ping";

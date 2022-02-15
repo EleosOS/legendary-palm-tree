@@ -1,16 +1,15 @@
 import { Interaction } from "detritus-client";
-import { MessageFlags } from "detritus-client/lib/constants";
+import { Permissions } from "detritus-client/lib/constants";
 
-import { CustomRole } from "../../../../Entities";
-import { Config } from "../../../../config";
-import { Signale } from "../../..";
-import { BaseCommandOption } from "../../Basecommand";
+import { Signale, Config, CustomRole, Webhooks } from "../../..";
+import { BaseCommandOption } from "../../";
 
 class RoleRemoveCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "remove",
             description: "Removes a custom role.",
+            permissionsClient: [Permissions.MANAGE_ROLES],
             ratelimit: {
                 duration: 5000,
                 limit: 1,
@@ -35,15 +34,13 @@ class RoleRemoveCommand extends BaseCommandOption {
         }
     }
 
-    async onSuccess(ctx: Interaction.InteractionContext) {
-        const guild = ctx.guilds.get("649352572464922634")!;
-
+    onSuccess(ctx: Interaction.InteractionContext) {
         Signale.success({
             prefix: "role",
             message: `Removed role for ${ctx.user.name}#${ctx.user.discriminator}`,
         });
 
-        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
+        Webhooks.execute(Webhooks.ids.customRoles, {
             avatarUrl: ctx.me!.avatarUrl,
             embed: {
                 title: "Removed custom role",

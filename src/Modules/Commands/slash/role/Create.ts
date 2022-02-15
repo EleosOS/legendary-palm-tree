@@ -1,9 +1,7 @@
-import { Interaction, Structures } from "detritus-client";
-import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib/constants";
+import { Interaction } from "detritus-client";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 
-import { CustomRole } from "../../../../Entities";
-import { Config } from "../../../../config";
-import { Signale } from "../../..";
+import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
@@ -26,10 +24,11 @@ class RoleCreateCommand extends BaseCommandOption {
                 limit: 1,
                 type: "user",
             },
+            permissionsClient: [Permissions.MANAGE_ROLES],
             options: [
                 {
                     name: "hex",
-                    description: "Hex color code, e.g.: #000000",
+                    description: "Hex color code, e.g.: #123456",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                 },
@@ -100,7 +99,6 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 
     async onSuccess(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
-        const guild = ctx.guilds.get("649352572464922634")!;
         const verb = ctx.command.metadata.edited ? "Edited" : "Created";
 
         const embed = createInfoEmbed(ctx.user, this.metadata.cachedRole);
@@ -111,7 +109,7 @@ class RoleCreateCommand extends BaseCommandOption {
             message: `${verb} role for ${ctx.user.name}, color: ${args.hex}, name: ${args.rolename}`,
         });
 
-        (await guild.fetchWebhooks()).get(Config.webhooks.customRoles)!.execute({
+        Webhooks.execute(Webhooks.ids.customRoles, {
             avatarUrl: ctx.me!.avatarUrl,
             embed: embed,
         });

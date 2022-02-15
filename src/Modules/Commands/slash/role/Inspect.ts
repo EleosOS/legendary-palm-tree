@@ -1,9 +1,8 @@
 import { Interaction, Structures } from "detritus-client";
-import { ApplicationCommandOptionTypes, MessageFlags } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
 
-import { CustomRole } from "../../../../Entities";
-import { Config } from "../../../../config";
-import { BaseCommandOption } from "../../Basecommand";
+import { Config, CustomRole } from "../../../";
+import { BaseCommandOption } from "../../";
 import { createInfoEmbed } from "./createInfoEmbed";
 
 interface RoleInspectArgs {

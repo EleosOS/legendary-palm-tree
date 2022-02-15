@@ -1,8 +1,8 @@
 import { Interaction } from "detritus-client";
-import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 
-import { changeServerIconHue } from "../../..";
-import { BaseCommandOption } from "../../Basecommand";
+import { changeServerIconHue, checkIfGuildIconIsGif } from "../../..";
+import { BaseCommandOption } from "../../";
 
 interface HueChangeCommandArgs {
     amount: number;
@@ -13,7 +13,6 @@ class HueChangeCommand extends BaseCommandOption {
         super({
             name: "change",
             description: "[ADMIN] Changes the hue of the server picture by the specified amount",
-            permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
                 duration: 10000,
                 limit: 1,
@@ -28,14 +27,6 @@ class HueChangeCommand extends BaseCommandOption {
                 },
             ],
         });
-    }
-
-    async onBeforeRun(ctx: Interaction.InteractionContext) {
-        return ctx.guild!.iconUrl !== null;
-    }
-
-    async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {

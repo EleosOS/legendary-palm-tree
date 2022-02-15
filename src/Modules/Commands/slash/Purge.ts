@@ -1,9 +1,9 @@
 import { Interaction } from "detritus-client";
 import { BaseCollection } from "detritus-client/lib/collections";
-import { ApplicationCommandOptionTypes, MessageFlags, Permissions } from "detritus-client/lib/constants";
+import { ApplicationCommandOptionTypes, Permissions } from "detritus-client/lib/constants";
 import { Message } from "detritus-client/lib/structures";
 
-import { BaseSlashCommand } from "../Basecommand";
+import { BaseSlashCommand } from "../";
 
 interface PurgeArgs {
     amount: number;
@@ -16,6 +16,7 @@ class PurgeCommand extends BaseSlashCommand {
             description: "[ADMIN] Deletes 2-100 messages in a channel.",
             disableDm: true,
             permissions: [Permissions.ADMINISTRATOR],
+            permissionsClient: [Permissions.MANAGE_MESSAGES],
             ratelimit: {
                 duration: 3000,
                 limit: 1,
@@ -33,11 +34,11 @@ class PurgeCommand extends BaseSlashCommand {
         });
     }
 
-    async onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeArgs) {
+    onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeArgs) {
         return !(args.amount < 2 || args.amount > 100);
     }
 
-    async onCancelRun(ctx: Interaction.InteractionContext) {
+    onCancelRun(ctx: Interaction.InteractionContext) {
         return this.ephEoR(ctx, "Only 2-100 messages can be deleted at a time.", 2);
     }
 

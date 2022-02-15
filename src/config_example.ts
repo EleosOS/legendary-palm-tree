@@ -6,9 +6,10 @@ export const Config = {
     webhooks: {
         serverImgHue: "", // ID of the webhook on which server image hue updates should be posted on
         customRoles: "", // ID of the webhook on which custom role updates should be posted on
+        commandUse: "", // ID of the webhook on which a message should be posted when someone uses a command
+        guildMemberRemove: "", // ID of the webhook on which a message should be posted when a member leaves
     },
     db: {
-        // TODO: Doesn't typeorm technically support every DB server if nothing mysql specific is used?
         host: "localhost", // URL to your MySQL server
         port: 3306, // Port of your MySQL server
         username: "palm", // Server username

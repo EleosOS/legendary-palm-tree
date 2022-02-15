@@ -1,35 +1,34 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import { InteractionBot, Signale } from ".";
-import { Config } from "../config";
-import { Hue } from "../Entities";
+import { InteractionBot, Signale, Config, Hue, checkIfGuildIconIsGif, Webhooks, CronManager } from "./";
 
 export async function changeServerIconHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
     const guild = client.guilds.get(Config.guildId)!;
+    let hueBefore;
 
     // Check for guild image
-    if (guild.iconUrl === null) {
+    if (guild.iconUrl === null || checkIfGuildIconIsGif(false)) {
         Signale.warn({
             prefix: "hue",
-            message: "Guild does not have an icon to change the hue of.",
+            message: "The server does not have an icon to change the hue of, or an animated icon.",
         });
 
         return false;
     }
 
     // Save new hue
-    let result = await Hue.findOne(1);
+    let hue = await Hue.findOne(1);
 
-    if (result) {
-        result.currentHue += amount;
+    if (hue) {
+        hueBefore = hue.currentHue;
+        hue.currentHue += amount;
 
-        if (result.currentHue >= 360) {
-            result.currentHue -= 360;
-        }
+        // I'm not even going to pretend I know how this line works, all I know is it normalizes the hue degree.
+        hue.currentHue = ((hue.currentHue % 360) + 360) % 360;
 
         try {
-            await result.save();
+            await hue.save();
         } catch (err) {
             Signale.error({
                 prefix: "hue",
@@ -37,11 +36,15 @@ export async function changeServerIconHue(amount: number) {
             });
         }
     } else {
-        result = new Hue();
-        result.currentHue = 10;
+        hue = new Hue();
+        hue.currentHue = amount;
+        hue.stepSize = 10;
+        hue.cronExpression = "0 0 * * *";
+
+        hue.currentHue = ((hue.currentHue % 360) + 360) % 360;
 
         try {
-            await result.save();
+            await hue.save();
         } catch (err) {
             Signale.error({
                 prefix: "hue",
@@ -51,7 +54,7 @@ export async function changeServerIconHue(amount: number) {
 
         Signale.warn({
             prefix: "hue",
-            message: `No hue existed in the DB. A new hue for the server was saved as 10 (id: ${result.id}), you can edit this with the command /hue overwrite.`,
+            message: `No hue existed in the DB. A new hue for the server was saved with id: ${hue.id}, hue: ${hue.currentHue}, stepSize: 10, cronExpression: "0 0 * * *" (At 12:00 AM) - you can edit these values with the /hue commands.`,
         });
     }
 
@@ -65,14 +68,26 @@ export async function changeServerIconHue(amount: number) {
     });
 
     // Notify
-    (await guild.fetchWebhooks()).get(Config.webhooks.serverImgHue)!.execute({
+    Webhooks.execute(Webhooks.ids.serverImgHue, {
         avatarUrl: client.user!.avatarUrl,
         embed: {
-            title: `Hue has been changed. (${result.currentHue})`,
+            title: `Icon hue has been changed`,
             author: {
-                name: "os",
+                name: client.user!.username,
                 iconUrl: client.user!.avatarUrl,
             },
+            fields: [
+                {
+                    name: "New",
+                    value: `${hue.currentHue}°`,
+                    inline: true,
+                },
+                {
+                    name: "Old",
+                    value: `${hueBefore}°`,
+                    inline: true,
+                },
+            ],
             image: {
                 url: guild.iconUrl!,
             },
@@ -81,29 +96,21 @@ export async function changeServerIconHue(amount: number) {
 
     Signale.note({
         prefix: "hue",
-        message: `Guild icon hue has been changed. (${result.currentHue})`,
+        message: `Guild icon hue has been changed to ${hue.currentHue}° (was ${hueBefore}°)`,
     });
 
     return true;
 }
 
-export function scheduleHueChange() {
-    let hueTrigger = new Date();
-    const now = new Date();
+export function scheduleStartupHueChange(cronExpression: string, stepSize: number) {
+    CronManager.removeTask("hueChange");
 
-    hueTrigger.setDate(now.getDate() + 1);
-    hueTrigger.setHours(0);
-    hueTrigger.setMinutes(0);
-    hueTrigger.setSeconds(0);
-    hueTrigger.setMilliseconds(0);
-
-    setTimeout(() => {
-        void changeServerIconHue(10);
-        setInterval(() => void changeServerIconHue(10), 86400000);
-    }, hueTrigger.getTime() - now.getTime());
+    CronManager.addTask("hueChange", cronExpression, () => {
+        changeServerIconHue(stepSize);
+    });
 
     Signale.info({
         prefix: "hue",
-        message: `Hue change scheduled`,
+        message: `Hue change scheduled at "${cronExpression}", stepSize ${stepSize}`,
     });
 }

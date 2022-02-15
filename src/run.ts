@@ -4,7 +4,7 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, scheduleHueChange } from "./Modules";
+import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
@@ -21,42 +21,60 @@ void (async () => {
     InteractionBot.addMultiple(Commands);
 
     InteractionBot.commands.forEach((command) => {
-        Signale.info({
+        Signale.start({
             prefix: "startup",
             message: "InteractionCommand found:",
             suffix: command.name,
         });
     });
 
-    await InteractionBot.run();
+    InteractionBot.client.once("ready", async () => {
+        Signale.start({ prefix: "startup", message: "Bot ready" });
 
-    // Clean up guild slash commands
-    //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
+        const hue = await Hue.findOne(1);
 
-    // Clean up global slash commands
-    //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+        if (hue) {
+            scheduleStartupHueChange(hue.cronExpression, hue.stepSize);
+        } else {
+            scheduleStartupHueChange("0 0 * * *", 10);
+        }
+    });
 
-    // Force the upload of known slash commands
-    //await InteractionBot.checkAndUploadCommands(true);
+    InteractionBot.client.once("gatewayReady", async () => {
+        Signale.start({ prefix: "startup", message: "Gateway ready" });
 
-    Signale.start({ prefix: "startup", message: "Bot ready" });
+        // Check for guild
+        try {
+            await InteractionBot.rest.fetchGuild(Config.guildId);
+        } catch (err) {
+            Signale.fatal({
+                prefix: "startup",
+                message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
+            });
 
-    // Check for guild
-    try {
-        await InteractionBot.rest.fetchGuild(Config.guildId);
-    } catch (err) {
-        Signale.fatal({
-            prefix: "startup",
-            message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
-        });
+            Signale.fatal({
+                prefix: "startup",
+                message: "Exiting...",
+            });
 
-        Signale.fatal({
-            prefix: "startup",
-            message: "Exiting...",
-        });
+            throw new Error();
+        }
 
-        throw new Error();
-    }
+        Webhooks.checkWebhooks();
 
-    scheduleHueChange();
+        checkIfGuildIconIsGif(true);
+
+        // Clean up guild slash commands
+        //await InteractionBot.rest.bulkOverwriteApplicationGuildCommands(InteractionBot.client.applicationId, Config.guildId, []);
+
+        // Clean up global slash commands
+        //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
+
+        // Force the upload of known slash commands
+        //await InteractionBot.checkAndUploadCommands(true);
+    });
+
+    InteractionBot.run({
+        wait: true,
+    });
 })();
