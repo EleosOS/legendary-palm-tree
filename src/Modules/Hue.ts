@@ -1,12 +1,11 @@
 import { ClusterClient } from "detritus-client";
 import Jimp from "jimp";
-import cron from "node-cron";
-import { InteractionBot, Signale, Config, Hue, checkIfGuildIconIsGif } from "./";
-import { Webhooks } from "./Webhooks";
+import { InteractionBot, Signale, Config, Hue, checkIfGuildIconIsGif, Webhooks, CronManager } from "./";
 
 export async function changeServerIconHue(amount: number) {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
     const guild = client.guilds.get(Config.guildId)!;
+    let hueBefore;
 
     // Check for guild image
     if (guild.iconUrl === null || checkIfGuildIconIsGif(false)) {
@@ -19,16 +18,17 @@ export async function changeServerIconHue(amount: number) {
     }
 
     // Save new hue
-    let result = await Hue.findOne(1);
+    let hue = await Hue.findOne(1);
 
-    if (result) {
-        result.currentHue += amount;
+    if (hue) {
+        hueBefore = hue.currentHue;
+        hue.currentHue += amount;
 
         // I'm not even going to pretend I know how this line works, all I know is it normalizes the hue degree.
-        result.currentHue = ((result.currentHue % 360) + 360) % 360;
+        hue.currentHue = ((hue.currentHue % 360) + 360) % 360;
 
         try {
-            await result.save();
+            await hue.save();
         } catch (err) {
             Signale.error({
                 prefix: "hue",
@@ -36,11 +36,15 @@ export async function changeServerIconHue(amount: number) {
             });
         }
     } else {
-        result = new Hue();
-        result.currentHue = 10;
+        hue = new Hue();
+        hue.currentHue = amount;
+        hue.stepSize = 10;
+        hue.cronExpression = "0 0 * * *";
+
+        hue.currentHue = ((hue.currentHue % 360) + 360) % 360;
 
         try {
-            await result.save();
+            await hue.save();
         } catch (err) {
             Signale.error({
                 prefix: "hue",
@@ -50,7 +54,7 @@ export async function changeServerIconHue(amount: number) {
 
         Signale.warn({
             prefix: "hue",
-            message: `No hue existed in the DB. A new hue for the server was saved as 10 (id: ${result.id}), you can edit this with the command /hue overwrite.`,
+            message: `No hue existed in the DB. A new hue for the server was saved with id: ${hue.id}, hue: ${hue.currentHue}, stepSize: 10, cronExpression: "0 0 * * *" (At 12:00 AM) - you can edit these values with the /hue commands.`,
         });
     }
 
@@ -67,11 +71,23 @@ export async function changeServerIconHue(amount: number) {
     Webhooks.execute(Webhooks.ids.serverImgHue, {
         avatarUrl: client.user!.avatarUrl,
         embed: {
-            title: `Hue has been changed. (${result.currentHue})`,
+            title: `Icon hue has been changed`,
             author: {
                 name: client.user!.username,
                 iconUrl: client.user!.avatarUrl,
             },
+            fields: [
+                {
+                    name: "New",
+                    value: `${hue.currentHue}°`,
+                    inline: true,
+                },
+                {
+                    name: "Old",
+                    value: `${hueBefore}°`,
+                    inline: true,
+                },
+            ],
             image: {
                 url: guild.iconUrl!,
             },
@@ -80,33 +96,21 @@ export async function changeServerIconHue(amount: number) {
 
     Signale.note({
         prefix: "hue",
-        message: `Guild icon hue has been changed. (${result.currentHue})`,
+        message: `Guild icon hue has been changed to ${hue.currentHue}° (was ${hueBefore}°)`,
     });
 
     return true;
 }
 
-export function scheduleHueChange(cronExpression: string) {
-    if (!cron.validate(cronExpression)) {
-        return Signale.fatal({
-            prefix: "hue",
-            message: "scheduleHueChange was called with an invalid cron expression, no hue change has been (re-)scheduled.",
-        });
-    }
+export function scheduleStartupHueChange(cronExpression: string, stepSize: number) {
+    CronManager.removeTask("hueChange");
 
-    const tasks = cron.getTasks();
-
-    if (tasks[0]) {
-        tasks[0].stop();
-        delete tasks[0];
-    }
-
-    cron.schedule(cronExpression, () => {
-        changeServerIconHue(10);
+    CronManager.addTask("hueChange", cronExpression, () => {
+        changeServerIconHue(stepSize);
     });
 
     Signale.info({
         prefix: "hue",
-        message: `Hue change scheduled`,
+        message: `Hue change scheduled at "${cronExpression}", stepSize ${stepSize}`,
     });
 }

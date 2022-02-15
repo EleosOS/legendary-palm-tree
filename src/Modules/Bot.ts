@@ -8,6 +8,7 @@ export const InteractionBot = new InteractionCommandClient(Config.token, {
     },
 });
 
+// Events
 InteractionBot.client.on("guildMemberRemove", async (gmr) => {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
 
@@ -30,12 +31,22 @@ InteractionBot.client.on("guildUpdate", (guildUpdate) => {
     }
 });
 
+// Helper Functions
+
+/**
+ * A shorthand to the guild
+ * @returns {Guild}
+ */
 export function getGuild() {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
     return client.guilds.get(Config.guildId)!;
 }
 
-export function checkIfGuildIconIsGif(warn: boolean) {
+/**
+ * Checks if the guild icon is a gif
+ * @param {boolean} warn If additional warning should be sent out if the guild icon is a gif (console log, webhook)
+ */
+export function checkIfGuildIconIsGif(warn: boolean): boolean {
     const guild = getGuild();
 
     if (guild.iconUrl?.includes("gif")) {

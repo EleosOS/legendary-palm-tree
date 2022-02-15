@@ -13,7 +13,6 @@ class HueChangeCommand extends BaseCommandOption {
         super({
             name: "change",
             description: "[ADMIN] Changes the hue of the server picture by the specified amount",
-            permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
                 duration: 10000,
                 limit: 1,
@@ -28,14 +27,6 @@ class HueChangeCommand extends BaseCommandOption {
                 },
             ],
         });
-    }
-
-    async onBeforeRun(ctx: Interaction.InteractionContext) {
-        return ctx.guild!.iconUrl !== null || !checkIfGuildIconIsGif(false);
-    }
-
-    async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, "This server either doesn't have an icon or an animated server icon, animated server icons are not supported.", 3);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueChangeCommandArgs) {

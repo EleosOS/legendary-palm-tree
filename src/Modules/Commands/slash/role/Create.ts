@@ -28,7 +28,7 @@ class RoleCreateCommand extends BaseCommandOption {
             options: [
                 {
                     name: "hex",
-                    description: "Hex color code, e.g.: #000000",
+                    description: "Hex color code, e.g.: #123456",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                 },

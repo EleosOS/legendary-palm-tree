@@ -7,4 +7,14 @@ export class Hue extends BaseEntity {
 
     @Column()
     currentHue!: number;
+
+    @Column({
+        default: "0 0 * * *",
+    })
+    cronExpression!: string;
+
+    @Column({
+        default: 10,
+    })
+    stepSize!: number;
 }

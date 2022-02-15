@@ -34,11 +34,11 @@ class PurgeCommand extends BaseSlashCommand {
         });
     }
 
-    async onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeArgs) {
+    onBeforeRun(ctx: Interaction.InteractionContext, args: PurgeArgs) {
         return !(args.amount < 2 || args.amount > 100);
     }
 
-    async onCancelRun(ctx: Interaction.InteractionContext) {
+    onCancelRun(ctx: Interaction.InteractionContext) {
         return this.ephEoR(ctx, "Only 2-100 messages can be deleted at a time.", 2);
     }
 

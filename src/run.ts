@@ -4,7 +4,7 @@ import { createConnection } from "typeorm";
 import { CustomRole, Hue } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, scheduleHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
+import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
@@ -31,7 +31,13 @@ void (async () => {
     InteractionBot.client.once("ready", async () => {
         Signale.start({ prefix: "startup", message: "Bot ready" });
 
-        scheduleHueChange("0 0 * * *");
+        const hue = await Hue.findOne(1);
+
+        if (hue) {
+            scheduleStartupHueChange(hue.cronExpression, hue.stepSize);
+        } else {
+            scheduleStartupHueChange("0 0 * * *", 10);
+        }
     });
 
     InteractionBot.client.once("gatewayReady", async () => {

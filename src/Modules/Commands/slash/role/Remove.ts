@@ -34,7 +34,7 @@ class RoleRemoveCommand extends BaseCommandOption {
         }
     }
 
-    async onSuccess(ctx: Interaction.InteractionContext) {
+    onSuccess(ctx: Interaction.InteractionContext) {
         Signale.success({
             prefix: "role",
             message: `Removed role for ${ctx.user.name}#${ctx.user.discriminator}`,

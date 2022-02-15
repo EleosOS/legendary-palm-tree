@@ -13,7 +13,6 @@ class HueOverwriteCommand extends BaseCommandOption {
         super({
             name: "overwrite",
             description: "[ADMIN] Overwrite the stored hue value without changing the server icon",
-            permissions: [Permissions.ADMINISTRATOR],
             ratelimit: {
                 duration: 10000,
                 limit: 1,
@@ -22,7 +21,7 @@ class HueOverwriteCommand extends BaseCommandOption {
             options: [
                 {
                     name: "amount",
-                    description: "What the hue value should be set as, between 0 and 360.",
+                    description: "What the hue value should be set as, between 0 and 360",
                     required: true,
                     type: ApplicationCommandOptionTypes.INTEGER,
                 },
@@ -30,19 +29,15 @@ class HueOverwriteCommand extends BaseCommandOption {
         });
     }
 
-    async onBeforeRun(ctx: Interaction.InteractionContext) {
-        return ctx.guild!.iconUrl !== null;
+    onBeforeRun(ctx: Interaction.InteractionContext, args: HueOverwriteCommandArgs) {
+        return args.amount < 0 || args.amount > 360;
     }
 
-    async onCancelRun(ctx: Interaction.InteractionContext) {
-        return this.ephEoR(ctx, "This server doesn't have an icon.", 3);
+    onCancelRun(ctx: Interaction.InteractionContext) {
+        return this.ephEoR(ctx, "`amount` needs to be between 0 and 360.", 2);
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueOverwriteCommandArgs) {
-        if (args.amount < 0 || args.amount > 360) {
-            return this.ephEoR(ctx, "`amount` needs to be between 0 and 360.", 2);
-        }
-
         // Find Hue
         const hue = await Hue.findOne(1);
 
@@ -59,11 +54,23 @@ class HueOverwriteCommand extends BaseCommandOption {
         Webhooks.execute(Webhooks.ids.serverImgHue, {
             avatarUrl: ctx.me!.avatarUrl,
             embed: {
-                title: `Hue value has been overwritten to ${hue.currentHue} (was ${hueBefore})`,
+                title: `Icon hue value has been overwritten`,
                 author: {
                     name: ctx.me!.username,
                     iconUrl: ctx.me!.avatarUrl,
                 },
+                fields: [
+                    {
+                        name: "New",
+                        value: `${hue.currentHue}°`,
+                        inline: true,
+                    },
+                    {
+                        name: "Old",
+                        value: `${hueBefore}°`,
+                        inline: true,
+                    },
+                ],
             },
         });
 
