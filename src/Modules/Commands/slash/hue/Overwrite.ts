@@ -30,7 +30,7 @@ class HueOverwriteCommand extends BaseCommandOption {
     }
 
     onBeforeRun(ctx: Interaction.InteractionContext, args: HueOverwriteCommandArgs) {
-        return args.amount < 0 || args.amount > 360;
+        return !(args.amount < 0 || args.amount > 360);
     }
 
     onCancelRun(ctx: Interaction.InteractionContext) {
