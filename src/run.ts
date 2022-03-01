@@ -57,7 +57,7 @@ void (async () => {
                 message: "Exiting...",
             });
 
-            throw new Error();
+            throw err;
         }
 
         Webhooks.checkWebhooks();

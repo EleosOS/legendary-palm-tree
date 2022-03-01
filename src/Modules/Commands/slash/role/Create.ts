@@ -14,7 +14,7 @@ class RoleCreateCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "create",
-            description: "Creates a custom role and assigns it to you.",
+            description: "Creates a custom role and assigns it to you",
             metadata: {
                 edited: false,
                 cachedRole: undefined,

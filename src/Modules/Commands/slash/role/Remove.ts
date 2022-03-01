@@ -8,7 +8,7 @@ class RoleRemoveCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "remove",
-            description: "Removes a custom role.",
+            description: "Removes a custom role",
             permissionsClient: [Permissions.MANAGE_ROLES],
             ratelimit: {
                 duration: 5000,

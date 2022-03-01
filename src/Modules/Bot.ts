@@ -1,7 +1,7 @@
 import { ClusterClient, InteractionCommandClient } from "detritus-client";
-import { MessageComponentButtonStyles, MessageComponentTypes } from "detritus-client/lib/constants";
-
+import { MessageComponentTypes } from "detritus-client/lib/constants";
 import { Config, Signale, Webhooks, VCNotifyManager } from "./";
+import { VCNotifyToggleButtonComponent } from "./Components";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {
@@ -10,8 +10,6 @@ export const InteractionBot = new InteractionCommandClient(Config.token, {
 });
 
 // Events
-// Message Component Interactions are handled in InteractionHandling.ts
-
 InteractionBot.client.on("guildMemberRemove", async (gmr) => {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
 
@@ -34,34 +32,52 @@ InteractionBot.client.on("guildUpdate", (guildUpdate) => {
     }
 });
 
-InteractionBot.client.on("voiceStateUpdate", (vsu) => {
-    if (vsu.leftChannel || VCNotifyManager.watchers.length === 0) return;
+// VCNotify
+InteractionBot.client.on("voiceStateUpdate", async (vsu) => {
+    if (!vsu.joinedChannel || VCNotifyManager.watchers.length === 0) return;
 
+    // Get the channel to post the notification in, if it's unavailable don't continue
+    let notifyChannel = getGuild().channels.get(Config.vcnotifyChannelId);
+    if (!notifyChannel) {
+        Signale.warn({
+            prefix: "vcnotify",
+            message: "The specified channel for VC notifications couldn't be accessed! No notifications were processed.",
+        });
+
+        return;
+    }
+
+    // Loop through all waiting notifications, remove any that match and generate the first part of the message
     let message = "";
     let j = 0;
 
     for (var i = VCNotifyManager.watchers.length; i--; ) {
-        const [key, value] = VCNotifyManager.watchers[i];
+        const [watchedId, notifiedId] = VCNotifyManager.watchers[i];
 
-        if (vsu.voiceState.userId === key) {
+        if (vsu.voiceState.userId === watchedId) {
             j++;
-            message += `<@${value}>`;
+            message += `<@${notifiedId}> `;
             VCNotifyManager.watchers.splice(i, 1);
         }
     }
 
+    // If more than two people were waiting, format the message differently
     if (j <= 2) {
-        message += " - ";
+        message += "- ";
     } else {
         message += "\n\n";
     }
 
     message += `<@${vsu.voiceState.userId}> has joined <#${vsu.voiceState.channelId}>. (You will not be notified again.)`;
 
-    const client = (InteractionBot.client as ClusterClient).shards.first()!;
-    Webhooks.execute(Webhooks.ids.voiceStateNotification, {
-        avatarUrl: client.user!.avatarUrl,
+    notifyChannel.createMessage({
         content: message,
+        components: [
+            {
+                type: MessageComponentTypes.ACTION_ROW,
+                components: [new VCNotifyToggleButtonComponent(vsu.voiceState.userId, true)],
+            },
+        ],
     });
 });
 

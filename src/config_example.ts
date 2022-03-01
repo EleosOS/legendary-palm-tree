@@ -3,12 +3,12 @@
 export const Config = {
     token: "", // Bot Token
     guildId: "", // ID of the server on which the bot should work on
+    vcnotifyChannelId: "", // ID of the channel in which users should recieve VC notifications
     webhooks: {
         serverImgHue: "", // ID of the webhook on which server image hue updates should be posted on
         customRoles: "", // ID of the webhook on which custom role updates should be posted on
         commandUse: "", // ID of the webhook on which a message should be posted when someone uses a command
         guildMemberRemove: "", // ID of the webhook on which a message should be posted when a member leaves
-        voiceStateNotification: "", // ID of the webhook on which users should be notified when a user they're looking for has joined a voice channel
     },
     db: {
         host: "localhost", // URL to your MySQL server
