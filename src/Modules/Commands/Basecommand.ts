@@ -15,7 +15,7 @@ enum EoRStatus {
 }
 
 /**
- * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral and edits strings into the normal form.
+ * Interaction.InteractionContext.editOrRespond(), but the response is forced to be ephemeral and edits strings into the project-defined normal form. Strings will not be edited when status is 0 or when options is an object.
  * @param ctx
  * @param options
  * @param status What icon to add to the content

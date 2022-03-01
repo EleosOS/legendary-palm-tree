@@ -71,7 +71,7 @@ void (async () => {
         //await InteractionBot.rest.bulkOverwriteApplicationCommands(InteractionBot.client.applicationId, []);
 
         // Force the upload of known slash commands
-        //await InteractionBot.checkAndUploadCommands(true);
+        await InteractionBot.checkAndUploadCommands(true);
     });
 
     InteractionBot.run({

@@ -1,14 +1,17 @@
-import { ClusterClient, InteractionCommandClient, ShardClient, Utils } from "detritus-client";
+import { ClusterClient, InteractionCommandClient } from "detritus-client";
+import { MessageComponentButtonStyles, MessageComponentTypes } from "detritus-client/lib/constants";
 
-import { Config, Signale, Webhooks } from "./";
+import { Config, Signale, Webhooks, VCNotifyManager } from "./";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
     gateway: {
-        intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_WEBHOOKS"],
+        intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_WEBHOOKS", "GUILD_VOICE_STATES"],
     },
 });
 
 // Events
+// Message Component Interactions are handled in InteractionHandling.ts
+
 InteractionBot.client.on("guildMemberRemove", async (gmr) => {
     const client = (InteractionBot.client as ClusterClient).shards.first()!;
 
@@ -29,6 +32,37 @@ InteractionBot.client.on("guildUpdate", (guildUpdate) => {
     if (guildUpdate.guild.id === Config.guildId) {
         checkIfGuildIconIsGif(true);
     }
+});
+
+InteractionBot.client.on("voiceStateUpdate", (vsu) => {
+    if (vsu.leftChannel || VCNotifyManager.watchers.length === 0) return;
+
+    let message = "";
+    let j = 0;
+
+    for (var i = VCNotifyManager.watchers.length; i--; ) {
+        const [key, value] = VCNotifyManager.watchers[i];
+
+        if (vsu.voiceState.userId === key) {
+            j++;
+            message += `<@${value}>`;
+            VCNotifyManager.watchers.splice(i, 1);
+        }
+    }
+
+    if (j <= 2) {
+        message += " - ";
+    } else {
+        message += "\n\n";
+    }
+
+    message += `<@${vsu.voiceState.userId}> has joined <#${vsu.voiceState.channelId}>. (You will not be notified again.)`;
+
+    const client = (InteractionBot.client as ClusterClient).shards.first()!;
+    Webhooks.execute(Webhooks.ids.voiceStateNotification, {
+        avatarUrl: client.user!.avatarUrl,
+        content: message,
+    });
 });
 
 // Helper Functions

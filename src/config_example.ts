@@ -8,6 +8,7 @@ export const Config = {
         customRoles: "", // ID of the webhook on which custom role updates should be posted on
         commandUse: "", // ID of the webhook on which a message should be posted when someone uses a command
         guildMemberRemove: "", // ID of the webhook on which a message should be posted when a member leaves
+        voiceStateNotification: "", // ID of the webhook on which users should be notified when a user they're looking for has joined a voice channel
     },
     db: {
         host: "localhost", // URL to your MySQL server

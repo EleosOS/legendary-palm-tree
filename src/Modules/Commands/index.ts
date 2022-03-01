@@ -6,4 +6,6 @@ import PingCommand from "./slash/Ping";
 import PurgeCommand from "./slash/Purge";
 import RoleGroupCommand from "./slash/RoleGroup";
 
-export default [new HelpCommand(), new HueGroupCommand(), new PingCommand(), new PurgeCommand(), new RoleGroupCommand()];
+import VCNotifyContextCommand from "./contextUser/VCNotify";
+
+export default [new HelpCommand(), new HueGroupCommand(), new PingCommand(), new PurgeCommand(), new RoleGroupCommand(), new VCNotifyContextCommand()];
