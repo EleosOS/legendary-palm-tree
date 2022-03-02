@@ -1,3 +1,6 @@
+import { User } from "detritus-client/lib/structures";
+import { Signale, Webhooks } from ".";
+
 /**
  * @key userId of the user to watch out for
  * @value userId of the user that should be notified
@@ -54,6 +57,36 @@ class VCNotifyManagerClass {
         } else {
             return `🔕 **You will no longer be notified when <@${watchedId}> joins a voice channel.**`;
         }
+    }
+
+    logToggle(watched: User, notified: User, active: boolean) {
+        Signale.info({
+            prefix: "vcNotify",
+            message: `${notified.name}#${notified.discriminator} - VC Notification toggled to "${active}" for ${watched.name}#${watched.discriminator}`,
+        });
+
+        Webhooks.execute(Webhooks.ids.vcNotifyLog, {
+            avatarUrl: watched.client.user?.avatarUrl,
+            embed: {
+                title: `VC Notification Toggled`,
+                author: {
+                    name: `${notified.username}#${notified.discriminator}`,
+                    iconUrl: notified.avatarUrl,
+                },
+                fields: [
+                    {
+                        name: "Active",
+                        value: String(active),
+                        inline: true,
+                    },
+                    {
+                        name: "Watching for",
+                        value: `<@${watched.id}>`,
+                        inline: true,
+                    },
+                ],
+            },
+        });
     }
 }
 

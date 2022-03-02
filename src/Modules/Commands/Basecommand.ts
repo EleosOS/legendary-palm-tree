@@ -1,10 +1,12 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
 import { FailedPermissions } from "detritus-client/lib/command";
-import { Permissions } from "detritus-client/lib/constants";
+import { Member, Message, User } from "detritus-client/lib/structures";
+import { Embed } from "detritus-client/lib/utils";
+const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags, Permissions } = Constants;
+
 import { Signale, Config } from "../";
 import { Webhooks } from "../Webhooks";
-const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags } = Constants;
 
 enum EoRStatus {
     NONE = 0,
@@ -178,21 +180,70 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
         return this.ephEoR(ctx, "You're not allowed to use this command.", 2);
     }
 
-    onSuccess(ctx: Interaction.InteractionContext) {
+    onSuccess(ctx: Interaction.InteractionContext, args: ParsedArgsFinished) {
+        let commandTypeString = "Other";
+
+        switch (ctx.command.type) {
+            case ApplicationCommandTypes.CHAT_INPUT:
+                commandTypeString = "Slash";
+                break;
+
+            case ApplicationCommandTypes.MESSAGE:
+                commandTypeString = "Message Context Menu";
+                break;
+
+            case ApplicationCommandTypes.USER:
+                commandTypeString = "User Context Menu";
+                break;
+        }
+
         Signale.info({
             prefix: "command",
-            message: `${this.fullName} used by ${ctx.user.name}#${ctx.user.discriminator}`,
+            message: `${this.fullName} (${commandTypeString}) used by ${ctx.user.name}#${ctx.user.discriminator}`,
         });
+
+        const embed = new Embed({
+            title: `Command Used: ${this.fullName}`,
+            author: {
+                name: `${ctx.user.username}#${ctx.user.discriminator}`,
+                icon_url: ctx.user.avatarUrl,
+            },
+            fields: [
+                {
+                    name: "Command Type",
+                    value: commandTypeString,
+                    inline: true,
+                },
+            ],
+        });
+
+        let gotMember = false;
+
+        for (const key in args) {
+            if (Object.prototype.hasOwnProperty.call(args, key)) {
+                const element: unknown = args[key];
+                let elementString = "[Unknown type or instance]";
+
+                if (typeof element === "string") {
+                    elementString = element;
+                } else if (element instanceof User || element instanceof Member) {
+                    if (!gotMember) {
+                        elementString = `<@${element.id}>`;
+                        gotMember = true;
+                    } else {
+                        continue;
+                    }
+                } else if (element instanceof Message) {
+                    elementString = `[\[Jump to Message\]](${element.jumpLink})`;
+                }
+
+                embed.addField(key, elementString, true);
+            }
+        }
 
         Webhooks.execute(Webhooks.ids.commandUse, {
             avatarUrl: ctx.me!.avatarUrl,
-            embed: {
-                title: `Command Used: ${this.fullName}`,
-                author: {
-                    name: `${ctx.user.username}#${ctx.user.discriminator}`,
-                    iconUrl: ctx.user.avatarUrl,
-                },
-            },
+            embed,
         });
     }
 
