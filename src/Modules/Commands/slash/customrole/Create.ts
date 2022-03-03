@@ -5,12 +5,12 @@ import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
-interface RoleCreateArgs {
+interface CustomRoleCreateArgs {
     hex: string;
     rolename: string;
 }
 
-class RoleCreateCommand extends BaseCommandOption {
+class CustomRoleCreateCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "create",
@@ -42,15 +42,15 @@ class RoleCreateCommand extends BaseCommandOption {
         });
     }
 
-    onBeforeRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    onBeforeRun(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         return /^#?([0-9A-Fa-f]{6})$/.test(args.hex);
     }
 
-    onCancelRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    onCancelRun(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         return this.ephEoR(ctx, `${args.hex} is not a valid hex code.`, 2);
     }
 
-    async run(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    async run(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         ctx.command!.metadata.edited = false;
 
         const guild = ctx.guilds.get(Config.guildId)!;
@@ -98,7 +98,7 @@ class RoleCreateCommand extends BaseCommandOption {
         ]);
     }
 
-    async onSuccess(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    async onSuccess(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         const verb = ctx.command.metadata.edited ? "Edited" : "Created";
 
         const embed = createInfoEmbed(ctx.user, this.metadata.cachedRole);
@@ -118,4 +118,4 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 }
 
-export default RoleCreateCommand;
+export default CustomRoleCreateCommand;

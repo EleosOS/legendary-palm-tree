@@ -1,15 +1,15 @@
 import { BaseSlashCommand } from "../";
 
-import RoleCreateCommand from "./role/Create";
-import RoleInfoCommand from "./role/Inspect";
-import RoleRemoveCommand from "./role/Remove";
+import CustomRoleCreateCommand from "./customrole/Create";
+import CustomRoleInspectCommand from "./customrole/Inspect";
+import CustomRoleRemoveCommand from "./customrole/Remove";
 
 class RoleGroupCommand extends BaseSlashCommand {
     constructor() {
         super({
-            name: "role",
+            name: "customrole",
             description: "Create your own custom role",
-            options: [new RoleCreateCommand(), new RoleInfoCommand(), new RoleRemoveCommand()],
+            options: [new CustomRoleCreateCommand(), new CustomRoleInspectCommand(), new CustomRoleRemoveCommand()],
         });
     }
 }

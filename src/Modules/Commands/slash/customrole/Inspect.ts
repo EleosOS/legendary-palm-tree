@@ -1,15 +1,15 @@
 import { Interaction, Structures } from "detritus-client";
 import { ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
 
-import { Config, CustomRole } from "../../../";
-import { BaseCommandOption } from "../../";
+import { Config, CustomRole } from "../../..";
+import { BaseCommandOption } from "../..";
 import { createInfoEmbed } from "./createInfoEmbed";
 
-interface RoleInspectArgs {
+interface CustomRoleInspectArgs {
     user: Structures.Member | Structures.User;
 }
 
-class RoleInspectCommand extends BaseCommandOption {
+class CustomRoleInspectCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "inspect",
@@ -32,7 +32,7 @@ class RoleInspectCommand extends BaseCommandOption {
         });
     }
 
-    async run(ctx: Interaction.InteractionContext, args: RoleInspectArgs) {
+    async run(ctx: Interaction.InteractionContext, args: CustomRoleInspectArgs) {
         const guild = ctx.guilds.get(Config.guildId)!;
 
         const result = await CustomRole.findOne({ where: { userId: args.user.id } });
@@ -47,4 +47,4 @@ class RoleInspectCommand extends BaseCommandOption {
     }
 }
 
-export default RoleInspectCommand;
+export default CustomRoleInspectCommand;
