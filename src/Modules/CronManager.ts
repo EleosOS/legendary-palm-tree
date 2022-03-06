@@ -1,5 +1,5 @@
 import Cron from "croner";
-import { CronOptions } from "croner/types/croner";
+import { CronOptions } from "croner/types/options";
 import { isValidCron } from "cron-validator";
 
 class CronManagerClass {

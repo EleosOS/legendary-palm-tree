@@ -5,16 +5,16 @@ import { Signale, Config, CustomRole, Webhooks } from "../../..";
 import { BaseCommandOption } from "../../Basecommand";
 import { createInfoEmbed } from "./createInfoEmbed";
 
-interface RoleCreateArgs {
+interface CustomRoleCreateArgs {
     hex: string;
     rolename: string;
 }
 
-class RoleCreateCommand extends BaseCommandOption {
+class CustomRoleCreateCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "create",
-            description: "Creates a custom role and assigns it to you.",
+            description: "Creates a custom role and assigns it to you",
             metadata: {
                 edited: false,
                 cachedRole: undefined,
@@ -34,7 +34,7 @@ class RoleCreateCommand extends BaseCommandOption {
                 },
                 {
                     name: "rolename",
-                    description: "Name of that your role should have",
+                    description: "Name of the role, max. 100 characters long",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                 },
@@ -42,15 +42,19 @@ class RoleCreateCommand extends BaseCommandOption {
         });
     }
 
-    onBeforeRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    onBeforeRun(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         return /^#?([0-9A-Fa-f]{6})$/.test(args.hex);
     }
 
-    onCancelRun(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    onCancelRun(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         return this.ephEoR(ctx, `${args.hex} is not a valid hex code.`, 2);
     }
 
-    async run(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    async run(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
+        if (args.rolename.length > 100) {
+            return this.ephEoR(ctx, "rolename cannot be longer than 100 characters.", 2);
+        }
+
         ctx.command!.metadata.edited = false;
 
         const guild = ctx.guilds.get(Config.guildId)!;
@@ -98,11 +102,11 @@ class RoleCreateCommand extends BaseCommandOption {
         ]);
     }
 
-    async onSuccess(ctx: Interaction.InteractionContext, args: RoleCreateArgs) {
+    async onSuccess(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
         const verb = ctx.command.metadata.edited ? "Edited" : "Created";
 
         const embed = createInfoEmbed(ctx.user, this.metadata.cachedRole);
-        embed.setAuthor(`${verb} custom role of ${ctx.user.name}#${ctx.user.discriminator}`);
+        embed.setAuthor(`${verb} custom role for ${ctx.user.name}#${ctx.user.discriminator}`);
 
         Signale.success({
             prefix: "role",
@@ -118,4 +122,4 @@ class RoleCreateCommand extends BaseCommandOption {
     }
 }
 
-export default RoleCreateCommand;
+export default CustomRoleCreateCommand;

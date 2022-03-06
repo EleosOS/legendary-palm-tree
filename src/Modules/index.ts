@@ -6,3 +6,4 @@ export * from "./Signale";
 export * from "./Hue";
 export * from "./Webhooks";
 export * from "./CronManager";
+export * from "./VCNotifyManager";

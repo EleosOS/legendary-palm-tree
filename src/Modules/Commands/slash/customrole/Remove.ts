@@ -2,13 +2,13 @@ import { Interaction } from "detritus-client";
 import { Permissions } from "detritus-client/lib/constants";
 
 import { Signale, Config, CustomRole, Webhooks } from "../../..";
-import { BaseCommandOption } from "../../";
+import { BaseCommandOption } from "../..";
 
-class RoleRemoveCommand extends BaseCommandOption {
+class CustomRoleRemoveCommand extends BaseCommandOption {
     constructor() {
         super({
             name: "remove",
-            description: "Removes a custom role.",
+            description: "Removes a custom role",
             permissionsClient: [Permissions.MANAGE_ROLES],
             ratelimit: {
                 duration: 5000,
@@ -30,7 +30,7 @@ class RoleRemoveCommand extends BaseCommandOption {
 
             result.remove();
         } else {
-            return this.ephEoR(ctx, "This user doesn't have a custom role.", 2);
+            return this.ephEoR(ctx, "You don't have a custom role.", 2);
         }
     }
 
@@ -55,4 +55,4 @@ class RoleRemoveCommand extends BaseCommandOption {
     }
 }
 
-export default RoleRemoveCommand;
+export default CustomRoleRemoveCommand;
