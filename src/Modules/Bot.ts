@@ -1,6 +1,7 @@
 import { ClusterClient, InteractionCommandClient } from "detritus-client";
 import { MessageComponentTypes } from "detritus-client/lib/constants";
 import { Embed } from "detritus-client/lib/utils";
+import { CustomRole } from "../Entities";
 import { Config, Signale, Webhooks, VCNotifyManager } from "./";
 import { VCNotifyToggleButtonComponent } from "./Components";
 
@@ -25,6 +26,35 @@ InteractionBot.client.on("guildMemberRemove", async (gmr) => {
             },
         },
     });
+
+    // Check for custom role and delete
+    const result = await CustomRole.findOne({ where: { userId: gmr.userId } });
+
+    if (result) {
+        const guild = getGuild();
+
+        await guild.deleteRole(result.roleId, {
+            reason: "User removed custom role",
+        });
+
+        result.remove();
+
+        Signale.success({
+            prefix: "role",
+            message: `Removed role for ${gmr.user.name}#${gmr.user.discriminator} (left guild)`,
+        });
+
+        Webhooks.execute(Webhooks.ids.customRoles, {
+            avatarUrl: client.user!.avatarUrl,
+            embed: {
+                title: "Removed custom role (left guild)",
+                author: {
+                    name: `${gmr.user.name}#${gmr.user.discriminator}`,
+                    iconUrl: gmr.user.avatarUrl,
+                },
+            },
+        });
+    }
 });
 
 InteractionBot.client.on("guildUpdate", (guildUpdate) => {

@@ -102,7 +102,7 @@ class CustomRoleCreateCommand extends BaseCommandOption {
         const verb = ctx.command.metadata.edited ? "Edited" : "Created";
 
         const embed = createInfoEmbed(ctx.user, this.metadata.cachedRole);
-        embed.setAuthor(`${verb} custom role of ${ctx.user.name}#${ctx.user.discriminator}`);
+        embed.setAuthor(`${verb} custom role for ${ctx.user.name}#${ctx.user.discriminator}`);
 
         Signale.success({
             prefix: "role",
