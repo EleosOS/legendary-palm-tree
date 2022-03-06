@@ -1,7 +1,7 @@
 import { BaseSlashCommand } from "../";
 
-import VCNotifyToggleCommand from "./vcNotify/Toggle";
-import VCNotifyListCommand from "./vcNotify/List";
+import VCNotifyToggleCommand from "./vcnotify/Toggle";
+import VCNotifyListCommand from "./vcnotify/List";
 
 class VCNotifyGroupCommand extends BaseSlashCommand {
     constructor() {
