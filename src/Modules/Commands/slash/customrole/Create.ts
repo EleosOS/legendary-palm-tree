@@ -34,7 +34,7 @@ class CustomRoleCreateCommand extends BaseCommandOption {
                 },
                 {
                     name: "rolename",
-                    description: "Name of the role",
+                    description: "Name of the role, max. 100 characters long",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                 },
@@ -51,6 +51,10 @@ class CustomRoleCreateCommand extends BaseCommandOption {
     }
 
     async run(ctx: Interaction.InteractionContext, args: CustomRoleCreateArgs) {
+        if (args.rolename.length > 100) {
+            return this.ephEoR(ctx, "rolename cannot be longer than 100 characters.", 2);
+        }
+
         ctx.command!.metadata.edited = false;
 
         const guild = ctx.guilds.get(Config.guildId)!;

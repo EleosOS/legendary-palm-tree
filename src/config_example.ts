@@ -9,6 +9,7 @@ export const Config = {
         customRoles: "", // ID of the webhook on which custom role updates should be posted on
         commandUse: "", // ID of the webhook on which a message should be posted when someone uses a command
         guildMemberRemove: "", // ID of the webhook on which a message should be posted when a member leaves
+        vcNotifyLog: "", // ID of the webhook on which VC Notifications will be logged
     },
     db: {
         host: "localhost", // URL to your MySQL server

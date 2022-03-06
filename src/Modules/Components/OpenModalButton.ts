@@ -1,5 +1,4 @@
-import { InteractionCallbackTypes, MessageComponentButtonStyles, MessageFlags } from "detritus-client/lib/constants";
-import { InteractionEditOrRespond } from "detritus-client/lib/structures";
+import { InteractionCallbackTypes, MessageComponentButtonStyles } from "detritus-client/lib/constants";
 import { ComponentActionData, ComponentButton, ComponentContext, InteractionModal } from "detritus-client/lib/utils";
 
 export class OpenModalButtonComponent extends ComponentButton {
