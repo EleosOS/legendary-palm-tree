@@ -16,6 +16,7 @@ void (async () => {
         password: Config.db.password,
         database: Config.db.db,
         entities: [CustomRole, Hue],
+        synchronize: true,
     });
 
     InteractionBot.addMultiple(Commands);

@@ -34,7 +34,7 @@ class CustomRoleCreateCommand extends BaseCommandOption {
                 },
                 {
                     name: "rolename",
-                    description: "Name of that your role should have",
+                    description: "Name of the role",
                     required: true,
                     type: ApplicationCommandOptionTypes.STRING,
                 },

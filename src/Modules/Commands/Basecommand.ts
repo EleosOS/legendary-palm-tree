@@ -1,7 +1,7 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
 import { FailedPermissions } from "detritus-client/lib/command";
-import { Member, Message, User } from "detritus-client/lib/structures";
+import { ChannelBase, Member, Message, Role, User } from "detritus-client/lib/structures";
 import { Embed } from "detritus-client/lib/utils";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags, Permissions } = Constants;
 
@@ -79,7 +79,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: err,
         });
 
-        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 0);
+        return this.ephEoR(ctx, `❌  **Something went wrong.** \`${err}\``, 0);
     }
 
     onRunError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
@@ -88,7 +88,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: err,
         });
 
-        return this.ephEoR(ctx, `⚠  **Something went wrong.** \`${err}\``, 0);
+        return this.ephEoR(ctx, `❌  **Something went wrong.** \`${err}\``, 0);
     }
 
     // TODO: Put own spin on this function, once I figure out when it triggers and what it actually does.
@@ -210,7 +210,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             },
             fields: [
                 {
-                    name: "Command Type",
+                    name: "[Type]",
                     value: commandTypeString,
                     inline: true,
                 },
@@ -222,10 +222,14 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
         for (const key in args) {
             if (Object.prototype.hasOwnProperty.call(args, key)) {
                 const element: unknown = args[key];
-                let elementString = "[Unknown type or instance]";
+                let elementString = "[Unsupported argument type]";
 
                 if (typeof element === "string") {
                     elementString = element;
+                } else if (element instanceof ChannelBase) {
+                    elementString = `<#${element.id}>`;
+                } else if (element instanceof Role) {
+                    elementString = `<@&${element.id}>`;
                 } else if (element instanceof User || element instanceof Member) {
                     if (!gotMember) {
                         elementString = `<@${element.id}>`;

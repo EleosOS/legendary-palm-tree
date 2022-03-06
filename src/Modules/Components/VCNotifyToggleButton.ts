@@ -1,22 +1,21 @@
 import { InteractionCallbackTypes, MessageComponentButtonStyles, MessageFlags } from "detritus-client/lib/constants";
 import { InteractionEditOrRespond } from "detritus-client/lib/structures";
-import { ComponentActionData, ComponentActionRow, ComponentButton, ComponentContext } from "detritus-client/lib/utils";
+import { ComponentActionData, ComponentButton, ComponentContext } from "detritus-client/lib/utils";
 
 import { VCNotifyManager } from "..";
 
 export class VCNotifyToggleButtonComponent extends ComponentButton {
-    componentId: string;
     watchedId: string;
     createNewMessage: boolean;
 
     constructor(watchedId: string, createNewMessage = false, data?: ComponentActionData) {
         super(data);
 
-        this.componentId = "vcnotify:";
+        this.customId = "vcnotify";
+
         this.watchedId = watchedId;
         this.createNewMessage = createNewMessage;
 
-        this.customId = this.componentId + this.watchedId;
         this.emoji = { name: "🔔" };
         this.label = "Toggle VC Notification";
         this.style = MessageComponentButtonStyles.PRIMARY;
