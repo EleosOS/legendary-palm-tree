@@ -106,6 +106,9 @@ InteractionBot.client.on("voiceStateUpdate", async (vsu) => {
         }
     }
 
+    // Nobody wanted to be notified for that user
+    if (j === 0) return;
+
     // If more than two people were waiting, format notifyString differently
     if (j <= 2) {
         notifyString += "- ";
