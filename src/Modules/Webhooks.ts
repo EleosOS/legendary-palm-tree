@@ -8,6 +8,7 @@ interface WebhookIds {
     commandUse: string;
     guildMemberRemove: string;
     vcNotifyLog: string;
+    boostLost: string;
     [key: string]: string;
 }
 
@@ -21,6 +22,7 @@ class WebhooksClass {
             customRoles: Config.webhooks.customRoles,
             guildMemberRemove: Config.webhooks.guildMemberRemove,
             vcNotifyLog: Config.webhooks.vcNotifyLog,
+            boostLost: Config.webhooks.boostLost,
         };
     }
 

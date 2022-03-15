@@ -60,6 +60,33 @@ InteractionBot.client.on("guildMemberRemove", async (gmr) => {
 InteractionBot.client.on("guildUpdate", (guildUpdate) => {
     if (guildUpdate.guild.id === Config.guildId) {
         checkIfGuildIconIsGif(true);
+
+        if (guildUpdate.old) {
+            if (guildUpdate.guild.premiumSubscriptionCount < guildUpdate.old.premiumSubscriptionCount) {
+                Webhooks.execute(Webhooks.ids.boostLost, {
+                    embed: {
+                        title: "Server Boost lost",
+                        color: Number(0xeb459e),
+                        fields: [
+                            {
+                                name: "Current Boosts",
+                                value: guildUpdate.guild.premiumSubscriptionCount.toString(),
+                                inline: true,
+                            },
+                            {
+                                name: "Before",
+                                value: guildUpdate.old.premiumSubscriptionCount.toString(),
+                                inline: true,
+                            },
+                            {
+                                name: "Current Level",
+                                value: guildUpdate.guild.premiumTier.toString(),
+                            },
+                        ],
+                    },
+                });
+            }
+        }
     }
 });
 
