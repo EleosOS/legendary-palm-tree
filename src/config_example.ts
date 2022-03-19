@@ -1,6 +1,7 @@
 // Rename config_example.ts to config.ts
+import { IConfig } from "./Modules";
 
-export const Config = {
+export const Config: IConfig = {
     token: "", // Bot Token
     guildId: "", // ID of the server on which the bot should work on
     vcNotifyPingChannelId: "", // ID of the channel in which users should recieve VC notifications
