@@ -226,6 +226,8 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
 
                 if (typeof element === "string") {
                     elementString = element;
+                } else if (typeof element === "number") {
+                    elementString = element.toString();
                 } else if (element instanceof ChannelBase) {
                     elementString = `<#${element.id}>`;
                 } else if (element instanceof Role) {
