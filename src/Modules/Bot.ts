@@ -90,85 +90,8 @@ InteractionBot.client.on("guildUpdate", (guildUpdate) => {
     }
 });
 
-// VCNotify
 InteractionBot.client.on("voiceStateUpdate", async (vsu) => {
-    if (!vsu.joinedChannel || VCNotifyManager.watchers.length === 0) return;
-
-    // Get the channel to post the notification in, if it's unavailable don't continue
-    let notifyChannel = getGuild().channels.get(Config.vcNotifyPingChannelId);
-    if (!notifyChannel) {
-        Signale.warn({
-            prefix: "vcnotify",
-            message: "The specified channel for VC notifications couldn't be accessed! No notifications were processed.",
-        });
-
-        return;
-    }
-
-    // Set up an embed for logging
-    const embed = new Embed({
-        title: "VC Notification Triggered",
-        fields: [
-            {
-                name: "Triggered by",
-                value: `<@${vsu.voiceState.userId}>`,
-                inline: true,
-            },
-        ],
-    });
-
-    // Loop through all waiting notifications, remove any that match and generate the first part of the message
-    let notifyString = "";
-    let logUserListString = "";
-    let j = 0;
-
-    for (var i = VCNotifyManager.watchers.length; i--; ) {
-        const [watchedId, notifiedId] = VCNotifyManager.watchers[i];
-
-        if (vsu.voiceState.userId === watchedId) {
-            j++;
-            notifyString += `<@${notifiedId}> `;
-            logUserListString += `<@${notifiedId}>\n`;
-            VCNotifyManager.watchers.splice(i, 1);
-        }
-    }
-
-    // Nobody wanted to be notified for that user
-    if (j === 0) return;
-
-    // If more than two people were waiting, format notifyString differently
-    if (j <= 2) {
-        notifyString += "- ";
-    } else {
-        notifyString += "\n\n";
-    }
-
-    notifyString += `<@${vsu.voiceState.userId}> has joined <#${vsu.voiceState.channelId}>. (You will not be notified again.)`;
-
-    notifyChannel.createMessage({
-        content: notifyString,
-        components: [
-            {
-                type: MessageComponentTypes.ACTION_ROW,
-                components: [new VCNotifyToggleButtonComponent(vsu.voiceState.userId, true)],
-            },
-        ],
-    });
-
-    // Logging
-    Signale.info({
-        prefix: "vcnotify",
-        message: `VC Notification triggered by ${vsu.voiceState.member!.name}#${vsu.voiceState.member!.discriminator}`,
-    });
-
-    const client = (InteractionBot.client as ClusterClient).shards.first()!;
-
-    embed.addField("Notified Users", logUserListString, true);
-
-    Webhooks.execute(Webhooks.ids.vcNotifyLog, {
-        avatarUrl: client.user!.avatarUrl,
-        embed,
-    });
+    VCNotifyManager.handleVoiceStateUpdate(vsu);
 });
 
 // Helper Functions
