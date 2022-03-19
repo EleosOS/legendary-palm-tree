@@ -42,6 +42,7 @@ class VCNotifyManagerClass {
             return false;
         } else {
             this.watchers.push([watchedId, notifiedId]);
+            this.logToggle(watchedId, notifiedId, true);
 
             return true;
         }
@@ -108,7 +109,7 @@ class VCNotifyManagerClass {
         });
 
         Webhooks.execute(Webhooks.ids.vcNotifyLog, {
-            avatarUrl: watched.client.user?.avatarUrl,
+            avatarUrl: client.user!.avatarUrl,
             embed: {
                 title: `VC Notification Toggled`,
                 author: {
