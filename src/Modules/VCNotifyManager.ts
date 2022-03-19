@@ -37,6 +37,7 @@ class VCNotifyManagerClass {
         // If a user is already watching for this person, disable the notification
         if (typeof vswIndex !== "undefined") {
             this.watchers.splice(vswIndex, 1);
+            this.logToggle(watchedId, notifiedId, false);
 
             return false;
         } else {
@@ -63,7 +64,44 @@ class VCNotifyManagerClass {
         }
     }
 
-    logToggle(watched: User, notified: User, active: boolean) {
+    logToggle(watchedId: string, notifiedId: string, active: boolean) {
+        const client = (InteractionBot.client as ClusterClient).shards.first()!;
+        const watched = client.users.get(watchedId);
+        const notified = client.users.get(notifiedId);
+
+        if (!watched || !notified) {
+            Signale.info({
+                prefix: "vcNotify",
+                message: `${notifiedId} - VC Notification toggled to "${active}" for ${watchedId}`,
+            });
+
+            Webhooks.execute(Webhooks.ids.vcNotifyLog, {
+                avatarUrl: client.user!.avatarUrl,
+                embed: {
+                    title: `VC Notification Toggled`,
+                    fields: [
+                        {
+                            name: "Active",
+                            value: String(active),
+                            inline: true,
+                        },
+                        {
+                            name: "User",
+                            value: `<@${notifiedId}>`,
+                            inline: true,
+                        },
+                        {
+                            name: "Watching for",
+                            value: `<@${watchedId}>`,
+                            inline: true,
+                        },
+                    ],
+                },
+            });
+
+            return;
+        }
+
         Signale.info({
             prefix: "vcNotify",
             message: `${notified.name}#${notified.discriminator} - VC Notification toggled to "${active}" for ${watched.name}#${watched.discriminator}`,
