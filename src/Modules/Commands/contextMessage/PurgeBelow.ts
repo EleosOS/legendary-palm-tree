@@ -5,7 +5,7 @@ import { Message } from "detritus-client/lib/structures";
 
 import { BaseContextMenuMessageCommand, ContextMenuMessageArgs } from "..";
 
-class VCNotifyContextCommand extends BaseContextMenuMessageCommand {
+class PurgeBelowContextCommand extends BaseContextMenuMessageCommand {
     constructor() {
         super({
             name: "Purge Below",
@@ -36,4 +36,4 @@ class VCNotifyContextCommand extends BaseContextMenuMessageCommand {
     }
 }
 
-export default VCNotifyContextCommand;
+export default PurgeBelowContextCommand;
