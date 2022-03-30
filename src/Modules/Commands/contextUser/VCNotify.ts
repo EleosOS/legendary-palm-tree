@@ -10,6 +10,8 @@ class VCNotifyContextCommand extends BaseContextMenuUserCommand {
         super({
             name: "Toggle VC Notification",
         });
+
+        this.doNotLogSuccessWebhook = true;
     }
 
     async run(ctx: Interaction.InteractionContext, args: ContextMenuUserArgs) {

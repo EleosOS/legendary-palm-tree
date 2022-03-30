@@ -58,7 +58,7 @@ class PurgeCommand extends BaseSlashCommand {
                 })
             )
             .then(() => {
-                this.ephEoR(ctx, `Deleted ${args.amount} messages.`, 1);
+                this.ephEoR(ctx, `Deleted ${messages.length} messages.`, 1);
             });
     }
 }

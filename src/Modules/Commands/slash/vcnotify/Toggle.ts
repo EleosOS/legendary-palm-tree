@@ -28,6 +28,8 @@ class VCNotifyToggleCommand extends BaseCommandOption {
                 },
             ],
         });
+
+        this.doNotLogSuccessWebhook = true;
     }
 
     async run(ctx: Interaction.InteractionContext, args: VCNotifyToggleCommandArgs) {

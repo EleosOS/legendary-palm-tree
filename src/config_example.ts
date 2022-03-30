@@ -1,6 +1,7 @@
 // Rename config_example.ts to config.ts
+import { IConfig } from "./Modules";
 
-export const Config = {
+export const Config: IConfig = {
     token: "", // Bot Token
     guildId: "", // ID of the server on which the bot should work on
     vcNotifyPingChannelId: "", // ID of the channel in which users should recieve VC notifications
@@ -10,6 +11,7 @@ export const Config = {
         commandUse: "", // ID of the webhook on which a message should be posted when someone uses a command
         guildMemberRemove: "", // ID of the webhook on which a message should be posted when a member leaves
         vcNotifyLog: "", // ID of the webhook on which VC Notifications will be logged
+        boostLost: "", // ID of the webhook on which the bot should post an update when the servers boost count goes down
     },
     db: {
         host: "localhost", // URL to your MySQL server

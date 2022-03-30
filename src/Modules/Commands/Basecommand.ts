@@ -72,6 +72,7 @@ function ephEoR(ctx: Interaction.InteractionContext, options: string | Structure
 export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommand<ParsedArgsFinished> {
     guildIds = new BaseSet([Config.guildId]);
     global = false;
+    doNotLogSuccessWebhook = false;
 
     onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
         Signale.error({
@@ -202,6 +203,11 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
             message: `${this.fullName} (${commandTypeString}) used by ${ctx.user.name}#${ctx.user.discriminator}`,
         });
 
+        // The rest of the function is just for the Webhook
+        if (this.doNotLogSuccessWebhook) {
+            return;
+        }
+
         const embed = new Embed({
             title: `Command Used: ${this.fullName}`,
             author: {
@@ -226,6 +232,8 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
 
                 if (typeof element === "string") {
                     elementString = element;
+                } else if (typeof element === "number") {
+                    elementString = element.toString();
                 } else if (element instanceof ChannelBase) {
                     elementString = `<#${element.id}>`;
                 } else if (element instanceof Role) {
@@ -256,6 +264,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
 
 export class BaseCommandOption<ParsedArgsFinished = Interaction.ParsedArgs> extends Interaction.InteractionCommandOption<ParsedArgsFinished> {
     type = ApplicationCommandOptionTypes.SUB_COMMAND;
+    doNotLogSuccessWebhook = false;
     ephEoR = ephEoR;
 }
 

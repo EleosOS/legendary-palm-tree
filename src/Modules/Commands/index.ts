@@ -9,4 +9,15 @@ import VCNotifyGroupCommand from "./slash/VCNotifyGroup";
 
 import VCNotifyContextCommand from "./contextUser/VCNotify";
 
-export default [new HelpCommand(), new HueGroupCommand(), new PingCommand(), new PurgeCommand(), new RoleGroupCommand(), new VCNotifyContextCommand(), new VCNotifyGroupCommand()];
+import PurgeBelowContextCommand from "./contextMessage/PurgeBelow";
+
+export default [
+    new HelpCommand(),
+    new HueGroupCommand(),
+    new PingCommand(),
+    new PurgeCommand(),
+    new RoleGroupCommand(),
+    new VCNotifyContextCommand(),
+    new VCNotifyGroupCommand(),
+    new PurgeBelowContextCommand(),
+];

@@ -235,7 +235,8 @@ amount: How much the hue should change.
             "Commands",
             `\`/help\` - You're looking at it right now!
 \n\`/ping\` - Pong!
-\n\`/purge (amount)\` - Deletes the specified amount of messages, between 2 and 100 messages at a time.`
+\n\`/purge (amount)\` - Deletes the specified amount of messages, between 2 and 100 messages at a time.
+\n\`Message Context Menu: Purge Below - Deletes up to 100 messages sent after the selected message (minimum 2).\``
         );
 
         this.embed.addField("User Left Messages", `The bot can be set up to send a message in a specific channel when a user leaves the server.`);
