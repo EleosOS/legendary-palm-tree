@@ -1,6 +1,7 @@
 import { Constants, Interaction, Structures, Utils } from "detritus-client";
 import { BaseSet } from "detritus-client/lib/collections";
 import { FailedPermissions } from "detritus-client/lib/command";
+import { ParsedArgs } from "detritus-client/lib/interaction";
 import { ChannelBase, Member, Message, Role, User } from "detritus-client/lib/structures";
 import { Embed } from "detritus-client/lib/utils";
 const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags, Permissions } = Constants;
@@ -74,7 +75,7 @@ export class BaseInteractionCommand<ParsedArgsFinished = Interaction.ParsedArgs>
     global = false;
     doNotLogSuccessWebhook = false;
 
-    onError(ctx: Interaction.InteractionContext, args: ParsedArgsFinished, err: any) {
+    onError(ctx: Interaction.InteractionContext, args: ParsedArgs, err: any) {
         Signale.error({
             prefix: ctx.command.name,
             message: err,
