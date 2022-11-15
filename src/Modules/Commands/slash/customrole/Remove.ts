@@ -21,7 +21,9 @@ class CustomRoleRemoveCommand extends BaseCommandOption {
     async run(ctx: Interaction.InteractionContext) {
         const guild = ctx.guilds.get(Config.guildId)!;
 
-        const result = await CustomRole.findOne({ where: { userId: ctx.userId } });
+        const result = await CustomRole.findOneBy({
+            userId: ctx.userId,
+        });
 
         if (result) {
             await guild.deleteRole(result.roleId, {

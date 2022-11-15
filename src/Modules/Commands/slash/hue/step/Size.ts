@@ -33,7 +33,9 @@ class HueStepSizeCommand extends BaseCommandOption {
     }
 
     async run(ctx: Interaction.InteractionContext, args: HueStepSizeCommandArgs) {
-        const hue = await Hue.findOne(1);
+        const hue = await Hue.findOneBy({
+            id: 1,
+        });
 
         if (!hue) {
             return this.ephEoR(ctx, "No hue value is saved in the Database, it needs to be changed once.", 3);

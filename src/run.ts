@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
+import { DataSource } from "typeorm";
 
 import { CustomRole, Hue } from "./Entities";
 
@@ -8,7 +8,7 @@ import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGui
 import Commands from "./Modules/Commands";
 
 void (async () => {
-    await createConnection({
+    const dataSource = new DataSource({
         type: "mysql",
         host: Config.db.host,
         port: Config.db.port,
@@ -18,6 +18,8 @@ void (async () => {
         entities: [CustomRole, Hue],
         synchronize: true,
     });
+
+    await dataSource.initialize();
 
     InteractionBot.addMultiple(Commands);
 
@@ -32,7 +34,9 @@ void (async () => {
     InteractionBot.client.once("ready", async () => {
         Signale.start({ prefix: "startup", message: "Bot ready" });
 
-        const hue = await Hue.findOne(1);
+        const hue = await Hue.findOneBy({
+            id: 1,
+        });
 
         if (hue) {
             scheduleStartupHueChange(hue.cronExpression, hue.stepSize);

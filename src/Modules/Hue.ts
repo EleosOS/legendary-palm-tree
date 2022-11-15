@@ -18,7 +18,9 @@ export async function changeServerIconHue(amount: number) {
     }
 
     // Save new hue
-    let hue = await Hue.findOne(1);
+    let hue = await Hue.findOneBy({
+        id: 1,
+    });
 
     if (hue) {
         hueBefore = hue.currentHue;

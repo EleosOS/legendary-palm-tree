@@ -35,7 +35,9 @@ class CustomRoleInspectCommand extends BaseCommandOption {
     async run(ctx: Interaction.InteractionContext, args: CustomRoleInspectArgs) {
         const guild = ctx.guilds.get(Config.guildId)!;
 
-        const result = await CustomRole.findOne({ where: { userId: args.user.id } });
+        const result = await CustomRole.findOneBy({
+            userId: args.user.id,
+        });
 
         if (result) {
             const role = guild.roles.get(result.roleId)!;

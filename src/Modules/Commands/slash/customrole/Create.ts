@@ -61,7 +61,9 @@ class CustomRoleCreateCommand extends BaseCommandOption {
         let roleId: string;
 
         // Find existing custom role entry
-        let result = await CustomRole.findOne({ where: { userId: ctx.userId } });
+        let result = await CustomRole.findOneBy({
+            userId: ctx.userId,
+        });
 
         if (result) {
             // Entry exists, just edit role

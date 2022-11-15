@@ -28,7 +28,9 @@ InteractionBot.client.on("guildMemberRemove", async (gmr) => {
     });
 
     // Check for custom role and delete
-    const result = await CustomRole.findOne({ where: { userId: gmr.userId } });
+    const result = await CustomRole.findOneBy({
+        userId: gmr.userId,
+    });
 
     if (result) {
         const guild = getGuild();
