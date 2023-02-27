@@ -9,7 +9,7 @@ const { ApplicationCommandTypes, ApplicationCommandOptionTypes, MessageFlags, Pe
 import { Signale, Config } from "../";
 import { Webhooks } from "../Webhooks";
 
-enum EoRStatus {
+export enum EoRStatus {
     NONE = 0,
     SUCCESS = 1,
     WARNING = 2,
