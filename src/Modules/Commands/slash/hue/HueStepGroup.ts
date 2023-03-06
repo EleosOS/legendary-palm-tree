@@ -1,6 +1,5 @@
-import { Permissions } from "detritus-client/lib/constants";
-
 import { BaseCommandOptionGroup } from "../../";
+
 import HueStepScheduleCommand from "./step/Schedule";
 import HueStepSizeCommand from "./step/Size";
 

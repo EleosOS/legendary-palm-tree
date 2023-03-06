@@ -7,6 +7,7 @@ export * from "./Hue";
 export * from "./Webhooks";
 export * from "./CronManager";
 export * from "./VCNotifyManager";
+export * from "./DnDNewSessionHelper";
 
 export interface IConfig {
     token: string;
