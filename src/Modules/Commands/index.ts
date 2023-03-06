@@ -6,6 +6,7 @@ import PingCommand from "./slash/Ping";
 import PurgeCommand from "./slash/Purge";
 import RoleGroupCommand from "./slash/RoleGroup";
 import VCNotifyGroupCommand from "./slash/VCNotifyGroup";
+import DnDHelperGroupCommand from "./slash/DnDHelperGroup";
 
 import VCNotifyContextCommand from "./contextUser/VCNotify";
 
@@ -20,4 +21,5 @@ export default [
     new VCNotifyContextCommand(),
     new VCNotifyGroupCommand(),
     new PurgeBelowContextCommand(),
+    new DnDHelperGroupCommand()
 ];

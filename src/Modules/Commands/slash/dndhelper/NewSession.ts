@@ -1,31 +1,21 @@
 import { Interaction } from "detritus-client";
-import { Permissions, InteractionCallbackTypes, MessageComponentInputTextStyles, ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
-import { ComponentInputText, InteractionModal } from "detritus-client/lib/utils";
+import { Permissions, InteractionCallbackTypes,  ApplicationCommandOptionTypes } from "detritus-client/lib/constants";
 
 import { BaseCommandOption } from "../..";
+import { NewSessionModalComponent } from "../../../Components/";
+import { DnDNewSessionHelperClass } from "../../../DnDNewSessionHelper";
 
 interface NewSessionArgs {
-    prefillName: string;
+    prefillname: string;
+    increasesessionnumber: boolean;
 }
-
-const NewSessionModal = new InteractionModal({
-    title: "Create New Session",
-    custom_id: "createnewsessionmodal",
-    components: [
-        new ComponentInputText({
-            label: "Event Title",
-            custom_id: "newsessioneventtitleinputtext",
-            style: MessageComponentInputTextStyles.SHORT,
-            value: "TBD"
-        }),
-    ]
-})
 
 class NewSessionCommand extends BaseCommandOption {
     constructor() {
         super({
-            name: "newdndsession",
-            description: "[SPECIAL] Automatically creates a new event and scheduling thread for the next DnD session.",
+            name: "newsession",
+            description: "[SPECIAL] Quickly create a new event and scheduling thread for the next DnD session.",
+            disableDm: true,
             permissionsClient: [Permissions.MANAGE_EVENTS],
             ratelimit: {
                 duration: 3000,
@@ -34,19 +24,31 @@ class NewSessionCommand extends BaseCommandOption {
             },
             options: [
                 {
-                    name: "prefill",
+                    name: "prefillname",
                     description: "Name of the prefill to use",
                     type: ApplicationCommandOptionTypes.STRING,
+                },
+                {
+                    name: "increasesessionnumber",
+                    description: "If the session number should be increased or not",
+                    type: ApplicationCommandOptionTypes.BOOLEAN,
                 },
             ],
         });
     }
 
     async run(ctx: Interaction.InteractionContext, args: NewSessionArgs) {
-        ctx.createResponse({
+        const prefill = await DnDNewSessionHelperClass.getPrefill(args.prefillname, ctx.guildId!);
+
+        await ctx.createResponse({
             type: InteractionCallbackTypes.MODAL,
-            data: 
-        })
+            data: new NewSessionModalComponent(undefined, prefill)
+        });
+
+        // This will increase the number even if the modal isn't sent
+        if (prefill && args.increasesessionnumber) {
+            DnDNewSessionHelperClass.increaseSessionNumber(prefill);
+        }
     }
 }
 

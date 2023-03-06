@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 
-import { CustomRole, Hue } from "./Entities";
+import { CustomRole, Hue, NewSessionPrefill } from "./Entities";
 
 import { Config } from "./config";
 import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
@@ -15,7 +15,7 @@ void (async () => {
         username: Config.db.username,
         password: Config.db.password,
         database: Config.db.db,
-        entities: [CustomRole, Hue],
+        entities: [CustomRole, Hue, NewSessionPrefill],
         synchronize: true,
     });
 
@@ -29,6 +29,42 @@ void (async () => {
             message: "InteractionCommand found:",
             suffix: command.name,
         });
+
+        if (command.options) {
+            command.options.forEach((option) => {
+                if (option.isSubCommandGroup) {
+                    Signale.start({
+                        prefix: "startup",
+                        message: "BaseCommandOptionGroup found:",
+                        suffix: option.fullName,
+                    });
+
+                    if (option.options) {
+                        option.options.forEach((option2) => {
+                            if (option2.isSubCommandGroup) {
+                                Signale.start({
+                                    prefix: "startup",
+                                    message: "BaseCommandOptionGroup found:",
+                                    suffix: option2.fullName,
+                                });
+                            } else if (option2.isSubCommand) {
+                                Signale.start({
+                                    prefix: "startup",
+                                    message: "BaseCommandOption found:",
+                                    suffix: option2.fullName,
+                                });
+                            }
+                        })
+                    }
+                } else if (option.isSubCommand) {
+                    Signale.start({
+                        prefix: "startup",
+                        message: "BaseCommandOption found:",
+                        suffix: option.fullName,
+                    });
+                }
+            })
+        }
     });
 
     InteractionBot.client.once("ready", async () => {

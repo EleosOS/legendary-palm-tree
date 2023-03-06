@@ -1,16 +1,16 @@
 import { NewSessionPrefill } from "../Entities";
 import { Config, Signale } from ".";
+import { InteractionDataApplicationCommand } from "detritus-client/lib/structures";
 
-type NewSessionPrefillOptions = {
-    prefillName?: string;
-    eventTitle?: string;
-    sessionNumber?: number;
-    schedulingThreadTitle?: string;
+interface NewSessionPrefillOptions {
+    prefillName: string | undefined;
+    eventTitle: string | undefined;
+    sessionNumber: number | undefined;
+    schedulingThreadTitle: string | undefined;
 };
 
 /**
  * This class contains helper functions for the new session string prefills of the DnDHelper commands.
- * Should be rewritten to support multiple guilds in the future
  */
 export class DnDNewSessionHelperClass {
     public static async createPrefill(options: NewSessionPrefillOptions) {
@@ -19,47 +19,74 @@ export class DnDNewSessionHelperClass {
             guildId: Config.guildId
         });
 
-        if (!newSessionPrefill) {
-            // Rewrite/Refactor for multiple Prefills in the future
+        if (newSessionPrefill) {
+            return false;
+        } else {
+            // Rewrite/Refactor guildId for multiple Prefills in the future
             newSessionPrefill = Object.assign(new NewSessionPrefill(), {
                 guildId: Config.guildId,
-                prefillName: "RecastCampaign",
-                eventTitle: "Bob's EGGS - Session ?",
-                sessionNumber: 15,
-                schedulingThreadTitle: "Session ?",
+                prefillName: options.prefillName,
+                eventTitle: options.eventTitle,
+                sessionNumber: options.sessionNumber,
+                schedulingThreadTitle: options.schedulingThreadTitle,
             });
 
             await newSessionPrefill.save();
+            return newSessionPrefill
         }
-
-        return newSessionPrefill;
     }
 
-    public static async getPrefill(prefillName: string) {
+    public static async getPrefill(prefillName: string, guildId: string) {
         let newSessionPrefill = await NewSessionPrefill.findOneBy({
             prefillName,
-            guildId: Config.guildId
+            guildId: guildId
         });
 
-        return newSessionPrefill;
+        return newSessionPrefill ?? undefined;
     }
 
     public static async increaseSessionNumber(newSessionPrefill: NewSessionPrefill) {
+        /*if (typeof newSessionPrefill === "string") {
+            let temp = await this.getPrefill(newSessionPrefill);
+
+            if (temp) {
+                newSessionPrefill = temp;
+            } else {
+                return false;
+            }
+        }*/
+
         newSessionPrefill.sessionNumber = newSessionPrefill.sessionNumber + 1;
         await newSessionPrefill.save();
         return newSessionPrefill;
     }
 
     public static async editPrefill(newSessionPrefill: NewSessionPrefill, options: NewSessionPrefillOptions) {
-        newSessionPrefill = Object.assign(newSessionPrefill, options);
+        const {eventTitle, prefillName, schedulingThreadTitle, sessionNumber} = options;
+        if (eventTitle) {
+            newSessionPrefill.eventTitle = eventTitle;
+        }
+        
+        if (prefillName) {
+            newSessionPrefill.prefillName = prefillName;
+        }
+
+        if (schedulingThreadTitle) {
+            newSessionPrefill.schedulingThreadTitle = schedulingThreadTitle;
+        }
+
+        if (sessionNumber) {
+            newSessionPrefill.sessionNumber = sessionNumber;
+        }
+
         await newSessionPrefill.save();
         return newSessionPrefill;
     }
 
-    public static async deletePrefill(prefillName: string) {
+    public static async deletePrefill(prefillName: string, guildId: string) {
         let newSessionPrefill = await NewSessionPrefill.findOneBy({
             prefillName,
-            guildId: Config.guildId
+            guildId: guildId
         });
 
         if (!newSessionPrefill) {
@@ -78,4 +105,8 @@ export class DnDNewSessionHelperClass {
             return false;
         }
     }
+
+    /*public static async handlePrefillAutocomplete(data: InteractionDataApplicationCommand) {
+        // search for prefill using data.options?
+    }*/
 }

@@ -1,8 +1,9 @@
 import { ClusterClient, InteractionCommandClient } from "detritus-client";
 import { MessageComponentTypes } from "detritus-client/lib/constants";
+import { InteractionDataApplicationCommand } from "detritus-client/lib/structures";
 import { Embed } from "detritus-client/lib/utils";
 import { CustomRole } from "../Entities";
-import { Config, Signale, Webhooks, VCNotifyManager } from "./";
+import { Config, Signale, Webhooks, VCNotifyManager, DnDNewSessionHelperClass } from "./";
 import { VCNotifyToggleButtonComponent } from "./Components";
 
 export const InteractionBot = new InteractionCommandClient(Config.token, {
@@ -95,6 +96,13 @@ InteractionBot.client.on("guildUpdate", (guildUpdate) => {
 InteractionBot.client.on("voiceStateUpdate", async (vsu) => {
     VCNotifyManager.handleVoiceStateUpdate(vsu);
 });
+
+/*InteractionBot.client.on("interactionCreate", (ic) => {
+    if (ic.interaction.type === 4) {
+        // Once other types of autocompletes get added, make a switch for ic.interaction.data.fullName
+        DnDNewSessionHelperClass.handlePrefillAutocomplete(ic.interaction.data);
+    }
+});*/
 
 // Helper Functions
 
