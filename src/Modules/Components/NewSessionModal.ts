@@ -116,7 +116,7 @@ export class NewSessionModalComponent extends InteractionModal {
             body: {
                 name: args.schedulingThreadTitle.replace("?", sessionNumber),
                 message: {
-                    content: `<@& oopsie 718217257754296320> https://discord.com/events/${ctx.guildId}/${event.id}`
+                    content: `<@&718217257754296320> https://discord.com/events/${ctx.guildId}/${event.id}`
                 }
             }
         });
