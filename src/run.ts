@@ -4,12 +4,13 @@ import { DataSource } from "typeorm";
 import { CustomRole, Hue, NewSessionPrefill } from "./Entities";
 
 import { Config } from "./config";
-import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGuildIconIsGif } from "./Modules";
+import { InteractionBot, Signale, scheduleStartupHueChange, Webhooks, checkIfGuildIconIsGif, HealthcheckServer } from "./Modules";
 import Commands from "./Modules/Commands";
 
 void (async () => {
     const dataSource = new DataSource({
-        type: "mysql",
+        // @ts-expect-error 2322 If it's not defined, just give up...
+        type: process.env.TYPEORM_DB_TYPE,
         host: Config.db.host,
         port: Config.db.port,
         username: Config.db.username,
@@ -84,13 +85,15 @@ void (async () => {
     InteractionBot.client.once("gatewayReady", async () => {
         Signale.start({ prefix: "startup", message: "Gateway ready" });
 
+        new HealthcheckServer();
+
         // Check for guild
         try {
             await InteractionBot.rest.fetchGuild(Config.guildId);
         } catch (err) {
             Signale.fatal({
                 prefix: "startup",
-                message: "Specified guild could not be found! guildId in config.ts might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
+                message: "Specified guild could not be found! Your GUILD_ID env var might be incorrect, the bot was not added to the guild, or Discord could be having an outage.",
             });
 
             Signale.fatal({
@@ -114,6 +117,10 @@ void (async () => {
         // Force the upload of known slash commands
         //await InteractionBot.checkAndUploadCommands(true);
     });
+
+    InteractionBot.client.on("raw", () => {
+        HealthcheckServer.updateLastEventTime();
+    })
 
     InteractionBot.run({
         wait: true,

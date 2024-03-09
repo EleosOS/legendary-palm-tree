@@ -2,3 +2,5 @@ node_modules
 build
 src/config.ts
 db
+discord_token.txt
+.env

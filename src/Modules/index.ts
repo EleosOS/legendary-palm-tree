@@ -8,6 +8,7 @@ export * from "./Webhooks";
 export * from "./CronManager";
 export * from "./VCNotifyManager";
 export * from "./DnDNewSessionHelper";
+export * from "./HealthcheckServer";
 
 export interface IConfig {
     token: string;

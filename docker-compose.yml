@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+    mariadb:
+        image: mariadb
+        environment:
+            MARIADB_DATABASE: palmdb
+            MARIADB_USER: palm
+            MARIADB_PASSWORD: changeme
+            MARIADB_ROOT_PASSWORD: changeme
+        volumes:
+            - mariadb-data:/var/lib/mysql
+
+    lpt:
+        build: .
+        depends_on:
+            - mariadb
+        env_file:
+            - .env
+        secrets:
+            - lpt_secret
+
+secrets:
+    lpt_secret:
+        file: discord_token.txt
+
+volumes:
+    mariadb-data:
